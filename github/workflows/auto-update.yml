@@ -7,7 +7,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: 拉取仓库代码IPTV 
+      - name: 直播源 
         uses: actions/checkout@v4
       - name: 安装依赖
         run: |
