@@ -1,6 +1,6 @@
 import requests
 
-# 把这里换成你真实的源地址
+# http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u
 SOURCE_URL = "http://zhibo.cc.cd/api.php?token=0awLE8oN&type=m3u"
 # 保存到仓库里的文件名，比如你叫iptv.m3u就填这个
 OUTPUT_FILE = "http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u"
