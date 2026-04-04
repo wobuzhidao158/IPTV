@@ -1,6 +1,5 @@
 import requests
-
-# http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u
+#http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u
 SOURCE_URL = "https://example.com/iptv.m3u"
 # 直播源（比如你现在的列表叫iptv.m3u）
 OUTPUT_FILE = "iptv.m3u"
