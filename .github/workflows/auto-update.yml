@@ -1,0 +1,24 @@
+name: 直播源自动更新
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 设置Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 运行更新脚本
+        run: python3 update.py
+      - name: 提交更新
+        run: |
+          git config user.name "你的GitHub用户名"
+          git config user.email "你的GitHub邮箱"
+          git add 直播源
+          git commit -m "自动更新直播源 $(date +'%Y-%m-%d %H:%M')"
+          git push
