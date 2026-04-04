@@ -5,7 +5,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 # -------------------------- 只改这两行 --------------------------
-url = "这里填你要拉的直播源地址"
+url = "http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u"
 filename = "直播源"
 # ----------------------------------------------------------------
 
