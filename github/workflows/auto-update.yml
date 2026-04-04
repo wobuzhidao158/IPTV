@@ -1,1 +1,24 @@
-github
+githubname: 自动更新IPTV源
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # 每天凌晨自动运行，你可以改成自己想要的时间
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取仓库代码
+        uses: actions/checkout@v4
+      - name: 安装依赖
+        run: |
+          apt-get update && apt-get install -y python3 python3-pip
+          pip3 install requests
+      - name: 运行更新脚本
+        run: python3 update.py
+      - name: 提交更新
+        run: |
+          git config --local user.email "你的邮箱@example.com"
+          git config --local user.name "你的GitHub用户名"
+          git add .
+          git commit -m "自动更新直播源" || echo "没有更新内容"
+          git push
