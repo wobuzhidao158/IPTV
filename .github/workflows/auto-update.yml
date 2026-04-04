@@ -17,8 +17,8 @@ jobs:
         run: python3 update.py
       - name: 提交更新
         run: |
-          git config user.name "你的GitHub用户名"
-          git config user.email "你的GitHub邮箱"
+          git config user.name "wobuzhidao158"
+          git config user.email "yanwei921016@gmail.com"
           git add 直播源
           git commit -m "自动更新直播源 $(date +'%Y-%m-%d %H:%M')"
           git push
