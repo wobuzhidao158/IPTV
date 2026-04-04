@@ -17,8 +17,8 @@ jobs:
         run: python3 update.py
       - name: 提交更新
         run: |
-          git config --local user.email "yanwei921016@gmail.com.com"
-          git config --local user.name "你的GitHub用户名"
+          git config --local user.email "yanwei921016@gmail.com"
+          git config --local user.name "wobuzhidao158"
           git add .
           git commit -m "自动更新直播源" || echo "没有更新内容"
           git push
