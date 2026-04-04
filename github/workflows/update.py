@@ -3,7 +3,7 @@ import requests
 # http://zhibo.cc.cd/api.php?token=OawLE8oN&type=txt
 SOURCE_URL = "http://zhibo.cc.cd/api.php?token=0awLE8oN&type=m3u"
 # 保存到仓库里的文件名，比如你叫iptv.m3u就填这个
-OUTPUT_FILE = "http://zhibo.cc.cd/api.php?token=OawLE8oN&type=m3u"
+OUTPUT_FILE = "直播源"
 
 # 拉取内容
 headers = {"User-Agent": "Mozilla/5.0"}
