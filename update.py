@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
-# 本地txt+远程接口双合并 带Emoji图标精准分类终极版
+# 方案B满血版：本地+远程双合+测速删失效+全网补新+带图标分类
 import os
 import requests
 from datetime import datetime
 
-# 基础配置
+# ========== 基础配置勿改 ==========
 LOCAL_TXT = "直播源.txt"
-REMOTE_URL = "http://zhibo.cc.cd/api.php?token=BVna62di&type=txt"
+OWN_REMOTE = "http://zhibo.cc.cd/api.php?token=BVna62di&type=txt"
 OUT_M3U = "iptv.m3u"
 LOG_TXT = "update_log.txt"
+CHECK_TIMEOUT = 3.5   # 快速测速，不超时
+# 全网备用源池（稳定长期更新，自动抓来补位兜底）
+BACKUP_POOL = [
+    "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
+]
+# =================================
 
-# 完全按你给的图标+分类1:1配置
+# 你要的带Emoji图标分类1:1匹配
 CATEGORIES = [
     {"name":"📺央视频道","kw":["CCTV","央视","cctv","中央"]},
     {"name":"📺卫视频道","kw":["卫视","江苏","浙江","湖南","北京","东方","山东","安徽","湖北","广东","四川","重庆","河南"]},
@@ -26,25 +32,29 @@ CATEGORIES = [
 def get_lines_from_text(text):
     return [x.strip() for x in text.splitlines() if x.strip()]
 
-def fetch_remote():
+def fetch_text(url):
     try:
-        r = requests.get(REMOTE_URL, timeout=12)
+        r = requests.get(url, timeout=10)
         r.encoding = "utf-8"
         return get_lines_from_text(r.text)
     except:
         return []
 
-def read_local():
-    if not os.path.exists(LOCAL_TXT):
-        return []
-    with open(LOCAL_TXT,"r",encoding="utf-8") as f:
-        return get_lines_from_text(f.read())
+# 快速存活检测，只筛明显死链，控时间不炸
+def is_live(url):
+    if not url.startswith("http"):
+        return False
+    try:
+        res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True)
+        return res.status_code in (200,301,302)
+    except:
+        return False
 
 def parse_all(lines):
     chans = []
     seen_url = set()
     i=0
-    while i<len(lines):
+    while i < len(lines):
         s = lines[i]
         if "," in s and not s.startswith("#"):
             n,u = s.split(",",1)
@@ -52,21 +62,21 @@ def parse_all(lines):
             if u.startswith("http") and u not in seen_url:
                 seen_url.add(u)
                 chans.append((n,u))
-            i+=1
+            i += 1
         elif s.startswith("#EXTINF"):
-            if i+1<len(lines):
+            if i+1 < len(lines):
                 name = s.split(",")[-1].strip()
                 url = lines[i+1].strip()
                 if url.startswith("http") and url not in seen_url:
                     seen_url.add(url)
                     chans.append((name,url))
-            i+=2
+            i += 2
         elif s.startswith("http") and s not in seen_url:
             seen_url.add(s)
-            chans.append((f"未知{i}",s))
-            i+=1
+            chans.append((f"备用{i}",s))
+            i += 1
         else:
-            i+=1
+            i += 1
     return chans
 
 def match_group(name):
@@ -78,32 +88,52 @@ def match_group(name):
     return "其他频道"
 
 def main():
-    local_lines = read_local()
-    remote_lines = fetch_remote()
-    all_lines = local_lines + remote_lines
+    # 1.读取本地+你的专属远程+全网备用池，三路合并
+    local = fetch_text(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
+    own_remote = fetch_text(OWN_REMOTE)
+    all_backup = []
+    for bu in BACKUP_POOL:
+        all_backup.extend(fetch_text(bu))
+    total_lines = local + own_remote + all_backup
+    print(f"📥汇总源行数：本地{len(local)}+专属{len(own_remote)}+备用池{len(all_backup)}")
 
-    chans = parse_all(all_lines)
+    # 2.解析成频道链接对
+    raw_chans = parse_all(total_lines)
+    print(f"🔍初步解析待检测：{len(raw_chans)}个")
 
+    # 3.自动测速：剔除失效，只留活源（核心！旧的坏源自动删掉）
+    good_chans = []
+    bad_cnt = 0
+    for name,url in raw_chans:
+        if is_live(url):
+            good_chans.append((name,url))
+        else:
+            bad_cnt += 1
+    print(f"✅测速完毕：有效留存{len(good_chans)}个，失效剔除{bad_cnt}个")
+
+    # 4.按带图标分组归类
     bucket = {g["name"]:[] for g in CATEGORIES}
     bucket["其他频道"] = []
-    for name,url in chans:
+    for name,url in good_chans:
         bucket[match_group(name)].append((name,url))
 
-    # 生成带图标分组M3U
-    m3u = ['#EXTM3U']
+    # 5.生成最终带图标M3U
+    m3u = ['#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"']
     order = [g["name"] for g in CATEGORIES] + ["其他频道"]
     for gname in order:
         for name,url in bucket[gname]:
             m3u.append(f'#EXTINF:-1 group-title="{gname}",{name}')
             m3u.append(url)
 
+    # 6.写入覆盖你的m3u，链接自动更新生效
     with open(OUT_M3U,"w",encoding="utf-8") as f:
         f.write("\n".join(m3u)+"\n")
 
-    log = f"[{datetime.now()}]本地{len(local_lines)}行+远程{len(remote_lines)}行→合并有效{len(chans)}个\n"
+    # 日志留存记录
+    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 方案B满血更新｜汇总解析{len(raw_chans)}｜剔除失效{bad_cnt}｜最终有效{len(good_chans)}\n"
     with open(LOG_TXT,"a",encoding="utf-8") as f:
         f.write(log)
-    print(log)
+    print(log+"🎉全部完成，永久续航生效！")
 
 if __name__ == "__main__":
     main()
