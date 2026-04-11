@@ -1,64 +1,69 @@
 # -*- coding: utf-8 -*-
-"""
-完全本地版直播源更新脚本
-零外网依赖，仅读取本地文件、生成输出，无任何网络请求
-"""
+# 合成终极版：中文文件名适配 + 本地无网络 + 去重 + 过滤无效链接 + 生成标准m3u + 日志记录
 import os
 from datetime import datetime
 
-# -------------------------- 配置区（已适配你的文件名） --------------------------
-# 你的本地直播源文件路径（仓库根目录下的文件名）
+# --------配置和你仓库完全对齐，不用改任何东西--------
 INPUT_FILE = "直播源.txt"
-# 生成的最终直播源文件路径（给播放器/APP用的文件）
 OUTPUT_FILE = "iptv.m3u"
-# 日志文件路径（可选，记录每次更新时间）
 LOG_FILE = "update_log.txt"
-# ----------------------------------------------------------------------
+# ---------------------------------------------------
 
 def main():
-    # 1. 检查输入文件是否存在
+    # 判断源文件是否存在
     if not os.path.exists(INPUT_FILE):
-        print(f"❌ 错误：输入文件 {INPUT_FILE} 不存在，跳过更新")
+        tip = f"[{datetime.now()}] 错误：未找到{INPUT_FILE}，跳过更新\n"
+        print(tip)
         with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 错误：{INPUT_FILE} 不存在\n")
+            f.write(tip)
         return
 
-    # 2. 读取本地直播源
+    # 读取本地txt直播源
     try:
         with open(INPUT_FILE, "r", encoding="utf-8") as f:
             lines = f.readlines()
-        print(f"✅ 成功读取 {len(lines)} 行直播源数据")
+        print(f"读取原始行数：{len(lines)}")
     except Exception as e:
-        print(f"❌ 读取文件失败：{str(e)}")
+        err = f"[{datetime.now()}] 读取失败：{str(e)}\n"
+        print(err)
         with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 读取失败：{str(e)}\n")
+            f.write(err)
         return
 
-    # 3. 生成标准M3U格式（可根据你的需求修改格式）
-    # 标准M3U头，兼容绝大多数播放器
-    m3u_content = ["#EXTM3U x-tvg-url=\"\""]
-    # 直接追加本地直播源（如果你的直播源.txt已经是标准M3U格式，可直接复制；这里做通用处理）
+    # 核心合成功能：去重 + 过滤空行/注释/非http链接
+    seen = set()
+    good = []
+    bad = dup = 0
+
     for line in lines:
-        line = line.strip()
-        if line and not line.startswith("#"):  # 跳过空行和注释，按需调整
-            # 这里可以加自定义处理，比如批量替换域名、添加分组等
-            m3u_content.append(line)
+        s = line.strip()
+        if not s or s.startswith("#") or not (s.startswith("http") or s.startswith("https")):
+            bad += 1
+            continue
+        if s in seen:
+            dup += 1
+            continue
+        seen.add(s)
+        good.append(s)
 
-    # 4. 写入最终M3U文件
-    try:
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write("\n".join(m3u_content) + "\n")
-        print(f"✅ 成功生成 {OUTPUT_FILE}，共 {len(m3u_content)-1} 个直播源")
-    except Exception as e:
-        print(f"❌ 写入文件失败：{str(e)}")
-        with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 写入失败：{str(e)}\n")
-        return
+    # 组装标准m3u头部+内容
+    m3u = ["#EXTM3U"]
+    for idx, url in enumerate(good, 1):
+        m3u.append(f'#EXTINF:-1 group-title="我的直播源",频道{idx:03d}')
+        m3u.append(url)
 
-    # 5. 记录更新日志
+    # 写出最终可用m3u
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        f.write("\n".join(m3u))
+
+    # 写汇总日志
+    log_txt = (
+        f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
+        f"原始{len(lines)}行 | 无效过滤{bad}个 | 重复{dup}个 | 最终有效{len(good)}个\n"
+    )
+    print(log_txt)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 成功更新，直播源数量：{len(m3u_content)-1}\n")
-    print(f"✅ 更新日志已写入 {LOG_FILE}")
+        f.write(log_txt)
 
 if __name__ == "__main__":
     main()
