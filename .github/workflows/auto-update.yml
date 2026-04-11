@@ -1,69 +1,37 @@
-# -*- coding: utf-8 -*-
-# 合成终极版：中文文件名适配 + 本地无网络 + 去重 + 过滤无效链接 + 生成标准m3u + 日志记录
-import os
-from datetime import datetime
+name: 直播源自动更新
+on:
+  push:
+  schedule:
+    # 北京时间 0:00 = UTC 16:00
+    - cron: '0 16 * * *'
+  workflow_dispatch:
 
-# --------配置和你仓库完全对齐，不用改任何东西--------
-INPUT_FILE = "直播源.txt"
-OUTPUT_FILE = "iptv.m3u"
-LOG_FILE = "update_log.txt"
-# ---------------------------------------------------
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-def main():
-    # 判断源文件是否存在
-    if not os.path.exists(INPUT_FILE):
-        tip = f"[{datetime.now()}] 错误：未找到{INPUT_FILE}，跳过更新\n"
-        print(tip)
-        with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(tip)
-        return
+      - name: 配置Python环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    # 读取本地txt直播源
-    try:
-        with open(INPUT_FILE, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        print(f"读取原始行数：{len(lines)}")
-    except Exception as e:
-        err = f"[{datetime.now()}] 读取失败：{str(e)}\n"
-        print(err)
-        with open(LOG_FILE, "a", encoding="utf-8") as f:
-            f.write(err)
-        return
+      - name: 安装依赖
+        run: pip install requests
 
-    # 核心合成功能：去重 + 过滤空行/注释/非http链接
-    seen = set()
-    good = []
-    bad = dup = 0
+      - name: 运行更新脚本
+        run: python3 update.py
 
-    for line in lines:
-        s = line.strip()
-        if not s or s.startswith("#") or not (s.startswith("http") or s.startswith("https")):
-            bad += 1
-            continue
-        if s in seen:
-            dup += 1
-            continue
-        seen.add(s)
-        good.append(s)
-
-    # 组装标准m3u头部+内容
-    m3u = ["#EXTM3U"]
-    for idx, url in enumerate(good, 1):
-        m3u.append(f'#EXTINF:-1 group-title="我的直播源",频道{idx:03d}')
-        m3u.append(url)
-
-    # 写出最终可用m3u
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(m3u))
-
-    # 写汇总日志
-    log_txt = (
-        f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] "
-        f"原始{len(lines)}行 | 无效过滤{bad}个 | 重复{dup}个 | 最终有效{len(good)}个\n"
-    )
-    print(log_txt)
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(log_txt)
-
-if __name__ == "__main__":
-    main()
+      - name: 强制提交更新
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "每日0点自动更新直播源" --allow-empty || echo "无变化，跳过提交"
+          git push
