@@ -1,41 +1,64 @@
-name: 直播源自动更新
+# -*- coding: utf-8 -*-
+"""
+完全本地版直播源更新脚本
+零外网依赖，仅读取本地文件、生成输出，无任何网络请求
+"""
+import os
+from datetime import datetime
 
-on:
-  push:
-  schedule:
-    # 北京时间 0:00 = UTC 16:00，定时触发
-    - cron: '0 16 * * *'
-  workflow_dispatch:
+# -------------------------- 配置区（按需修改） --------------------------
+# 你的本地直播源文件路径（仓库根目录下的文件名）
+INPUT_FILE = "live.txt"
+# 生成的最终直播源文件路径（给播放器/APP用的文件）
+OUTPUT_FILE = "iptv.m3u"
+# 日志文件路径（可选，记录每次更新时间）
+LOG_FILE = "update_log.txt"
+# ----------------------------------------------------------------------
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    # 关键：给工作流分配推送权限
-    permissions:
-      contents: write
-    steps:
-      - name: 拉取代码
-        uses: actions/checkout@v4
-        with:
-          # 关键：拉取完整历史，避免推送冲突
-          fetch-depth: 0
+def main():
+    # 1. 检查输入文件是否存在
+    if not os.path.exists(INPUT_FILE):
+        print(f"❌ 错误：输入文件 {INPUT_FILE} 不存在，跳过更新")
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 错误：{INPUT_FILE} 不存在\n")
+        return
 
-      - name: 配置Python环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
+    # 2. 读取本地直播源
+    try:
+        with open(INPUT_FILE, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        print(f"✅ 成功读取 {len(lines)} 行直播源数据")
+    except Exception as e:
+        print(f"❌ 读取文件失败：{str(e)}")
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 读取失败：{str(e)}\n")
+        return
 
-      - name: 安装依赖
-        run: pip install requests
+    # 3. 生成标准M3U格式（可根据你的需求修改格式）
+    # 标准M3U头，兼容绝大多数播放器
+    m3u_content = ["#EXTM3U x-tvg-url=\"\""]
+    # 直接追加本地直播源（如果你的live.txt已经是标准M3U格式，可直接复制；这里做通用处理）
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith("#"):  # 跳过空行和注释，按需调整
+            # 这里可以加自定义处理，比如批量替换域名、添加分组等
+            m3u_content.append(line)
 
-      - name: 运行更新脚本
-        run: python3 update.py
+    # 4. 写入最终M3U文件
+    try:
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write("\n".join(m3u_content) + "\n")
+        print(f"✅ 成功生成 {OUTPUT_FILE}，共 {len(m3u_content)-1} 个直播源")
+    except Exception as e:
+        print(f"❌ 写入文件失败：{str(e)}")
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 写入失败：{str(e)}\n")
+        return
 
-      - name: 强制提交更新（空提交确保触发）
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          # --allow-empty 强制生成空提交，就算没文件变化也能提交
-          git commit -m "每日0点强制更新直播源" --allow-empty || echo "无变化，跳过提交"
-          git push
+    # 5. 记录更新日志
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 成功更新，直播源数量：{len(m3u_content)-1}\n")
+    print(f"✅ 更新日志已写入 {LOG_FILE}")
+
+if __name__ == "__main__":
+    main()
