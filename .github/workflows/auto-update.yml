@@ -10,9 +10,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 关键：给工作流分配推送权限
+    permissions:
+      contents: write
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
+        with:
+          # 关键：拉取完整历史，避免推送冲突
+          fetch-depth: 0
 
       - name: 配置Python环境
         uses: actions/setup-python@v4
@@ -30,6 +36,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          # --allow-empty 强制生成空提交，就算没文件变化也能提交，保证更新
+          # --allow-empty 强制生成空提交，就算没文件变化也能提交
           git commit -m "每日0点强制更新直播源" --allow-empty || echo "无变化，跳过提交"
           git push
