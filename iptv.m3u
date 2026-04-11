@@ -1,4 +1,4 @@
-#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"
+#EXTM3U
 #EXTINF:-1 group-title="央视频道",CCTV1
 http://222.223.41.27:8888/hls/1/index.m3u8
 #EXTINF:-1 group-title="央视频道",CCTV2
@@ -735,8 +735,6 @@ http://ali-m-l.cztv.com/channels/lantian/channel04/1080p.m3u8
 http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
 #EXTINF:-1 group-title="卫视频道",山东教育卫视
 http://60.10.139.113:8801/hls/63/index.m3u8
-#EXTINF:-1 group-title="卫视频道",黑龙江少儿
-https://ls.qingting.fm/live/4972/64k.m3u8
 #EXTINF:-1 group-title="卫视频道",凤凰卫视
 http://119.32.12.17:2901/udp/224.1.100.3:11111
 #EXTINF:-1 group-title="卫视频道",凤凰卫视备选1
@@ -871,12 +869,12 @@ http://live.zohi.tv/video/s10001-fztv-4/index.m3u8
 https://goodiptv.club/douyu/10351891
 #EXTINF:-1 group-title="儿童频道",韩国EBS少儿
 http://ebsonairios.ebs.co.kr/ebsutablet500k/tablet500k/playlist.m3u8
+#EXTINF:-1 group-title="儿童频道",黑龙江少儿
+https://ls.qingting.fm/live/4972/64k.m3u8
 #EXTINF:-1 group-title="儿童频道",开心锤锤动漫
 https://goodiptv.club/douyu/9018297
 #EXTINF:-1 group-title="儿童频道",PP看动漫
 https://goodiptv.club/douyu/9837291
-#EXTINF:-1 group-title="儿童频道",顾止最爱的小胖宝贝
-https://goodiptv.club/douyu/238643
 #EXTINF:-1 group-title="香港频道",TVB Plus
 https://cdn6.101.qzz.io/163189/tvbp
 #EXTINF:-1 group-title="香港频道",TVB Plus
@@ -917,14 +915,6 @@ http://38.64.72.148:80/hls/modn/list/2015/chunklist0.m3u8
 http://38.64.72.148:80/hls/modn/list/2013/chunklist1.m3u8
 #EXTINF:-1 group-title="台湾频道",纬来精彩
 http://61.221.215.25:8800/hls/48/index.m3u8
-#EXTINF:-1 group-title="台湾频道",民视
-http://iptv.4666888.xyz/iptv2A.php?id=46
-#EXTINF:-1 group-title="台湾频道",民视新闻
-http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
-#EXTINF:-1 group-title="台湾频道",民视新闻
-http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
-#EXTINF:-1 group-title="台湾频道",民视新闻
-http://74.91.26.218:82/live/ftvnews.m3u8
 #EXTINF:-1 group-title="新加坡",新加坡
 https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 #EXTINF:-1 group-title="新加坡",新加坡备选
@@ -1039,6 +1029,14 @@ http://222.128.55.152:9080/live/ts.m3u8
 http://38.64.72.148/hls/modn/list/4013/chunklist0.m3u8
 #EXTINF:-1 group-title="其他频道",台视新闻
 http://38.64.72.148/hls/modn/list/4013/chunklist1.m3u8
+#EXTINF:-1 group-title="其他频道",民视
+http://iptv.4666888.xyz/iptv2A.php?id=46
+#EXTINF:-1 group-title="其他频道",民视新闻
+http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
+#EXTINF:-1 group-title="其他频道",民视新闻
+http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
+#EXTINF:-1 group-title="其他频道",民视新闻
+http://74.91.26.218:82/live/ftvnews.m3u8
 #EXTINF:-1 group-title="其他频道",龙华洋片
 http://iptv.4666888.xyz/iptv2A.php?id=60
 #EXTINF:-1 group-title="其他频道",CAPITALTV
@@ -1313,6 +1311,8 @@ https://goodiptv.club/douyu/1770806
 https://goodiptv.club/douyu/9388931
 #EXTINF:-1 group-title="其他频道",少打白骨精
 https://goodiptv.club/douyu/11531165
+#EXTINF:-1 group-title="其他频道",顾止最爱的小胖宝贝
+https://goodiptv.club/douyu/238643
 #EXTINF:-1 group-title="其他频道",碎片记
 https://goodiptv.club/douyu/9412981
 #EXTINF:-1 group-title="其他频道",王大齐吖
