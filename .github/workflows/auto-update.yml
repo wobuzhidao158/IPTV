@@ -27,7 +27,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 超时时间放宽到01分钟，给足测速时间，绝对不超时
+    # 超时时间放宽到10分钟，给足测速时间，绝对不超时
     timeout-minutes: 10
     steps:
       - name: 拉取完整代码
