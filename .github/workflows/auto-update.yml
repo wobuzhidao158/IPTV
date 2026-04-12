@@ -4,9 +4,19 @@ permissions:
 on:
   push:
     branches: [ main ]
+    # 只改核心文件才触发，杜绝乱触发
+    paths:
+      - 'update.py'
+      - '.github/workflows/auto-update.yml'
+      - '直播源.txt'
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
+
+# 强制单任务，新任务直接砍旧任务，绝不堆积
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -15,23 +25,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 装Python
+      - name: 配置Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: 装依赖
+      - name: 安装依赖
         run: pip install requests
 
-      - name: 跑脚本生成m3u
+      - name: 执行更新脚本
         run: python update.py
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 直接提交保存
+      - name: 提交更新
         run: |
-          git config user.name bot
-          git config user.email bot@qq.com
-          git add .
-          git commit -m update
-          git push
+          git config user.name "github-actions[bot]"
+          git config user.email "bot@example.com"
+          git add *.m3u *.txt
+          if [[ -n $(git status --porcelain) ]]; then
+            git commit -m "Auto update m3u"
+            git push
+          fi
