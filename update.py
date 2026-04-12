@@ -1,24 +1,46 @@
 # -*- coding: utf-8 -*-
-# 私源绝对优先终版｜不分地区｜全频道保留｜彻底覆盖｜你的源永不被顶替
+# 私源优先 + 只保留1080p及以上高清频道
 import os
 import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import re
 
-# ========== 基础配置（你的私源永远优先） ==========
+# ========== 基础配置 ==========
 LOCAL_TXT = "直播源.txt"          # 你的本地私源
 OWN_REMOTE = "https://zhibo.cc.cd/api.php?token=BVna62di&type=txt"  # 你的API私源
 OUT_M3U = "iptv.m3u"
 LOG_TXT = "update_log.txt"
-# 【核心：只做基础存活校验，不做地区限制，不杀你的源】
 CHECK_TIMEOUT = 8
 BACKUP_POOL = [
     "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
 ]
-# =====================================================
 
-# 央视精准排序（100%锁死顺序，不打乱你的源）
+# ========== 分辨率过滤规则（只保留1080p及以上） ==========
+def is_hd_channel(name, url=""):
+    """
+    判断频道是否为高清（1080p及以上）
+    规则：名称或URL中包含1080/4K/8K/2160等关键词，
+          且不包含720/480/360等低分辨率标识。
+    """
+    text = (name + " " + url).lower()
+    
+    # 高清关键词（通过）
+    hd_keywords = ["1080", "4k", "8k", "2160", "uhd", "超清", "高清"]
+    # 低清关键词（直接过滤）
+    sd_keywords = ["720", "480", "360", "标清", "流畅"]
+    
+    # 如果包含低清关键词且不包含高清关键词，则过滤
+    if any(k in text for k in sd_keywords) and not any(k in text for k in hd_keywords):
+        return False
+    
+    # 必须包含至少一个高清关键词，否则视为普通清晰度，过滤
+    if not any(k in text for k in hd_keywords):
+        return False
+    
+    return True
+
+# ========== 原有功能函数（保持不动） ==========
 def get_cctv_sort_key(name):
     m = re.search(r'CCTV[-]?(\d+)(\+)?', name, re.IGNORECASE)
     if m:
@@ -32,7 +54,6 @@ def get_cctv_sort_key(name):
             return n
     return 99 if ('4K' in name or '8K' in name) else 100
 
-# 卫视省份标准排序
 PROVINCE_ORDER = ["北京","天津","河北","山西","内蒙古","辽宁","吉林","黑龙江",
                   "上海","江苏","浙江","安徽","福建","江西","山东","河南","湖北",
                   "湖南","广东","广西","海南","重庆","四川","贵州","云南","陕西",
@@ -43,7 +64,6 @@ def get_websort(name):
             return idx
     return 999
 
-# 【全分类完整保留：港澳台/新加坡/影视轮播一个不少】
 CATEGORIES = [
     {"name":"📺央视频道","kw":["CCTV","央视","cctv","中央"]},
     {"name":"📺卫视频道","kw":["卫视"]},
@@ -68,22 +88,17 @@ def fetch_src(url):
         print(f"拉取失败：{url}")
         return []
 
-# 【核心校验：只做基础存活，不做地区限制，不杀你的源】
 def safe_check(url):
     if not url.startswith("http"):
         return False
-    # 直播流格式直接放行，100%保住你的源
     if "m3u8" in url.lower() or "ts" in url.lower() or "live" in url.lower():
         return True
-    # 普通链接宽松校验，不卡死
     try:
         res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True, verify=False)
         return res.status_code in (200,301,302,304)
     except:
-        # 超时不判死，直接放行，不丢你的台
         return True
 
-# 双格式解析+去重（先入先保，你的源永远优先，公共源不顶替）
 def parse_mix(lines):
     arr, seen_url = [], set()
     i=0
@@ -118,25 +133,23 @@ def match_group(name):
 def main():
     requests.packages.urllib3.disable_warnings()
 
-    # ============== 【绝对核心：你的私源100%优先】 ==============
-    # 1. 先拉取你的所有私源（本地+API），优先级最高
+    # 1. 拉取私源
     local = fetch_src(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
     remote = fetch_src(OWN_REMOTE)
     my_private_src = local + remote
     print(f"✅你的私源总数：{len(my_private_src)}个")
 
-    # 2. 再拉取公共备用源，只补你没有的，绝不抢位
+    # 2. 拉取公共备用源
     backup_all = []
     for b in BACKUP_POOL:
         backup_all.extend(fetch_src(b))
     print(f"🔧公共备用源总数：{len(backup_all)}个")
 
-    # 3. 顺序锁死：你的私源在前，公共源在后
-    # 去重时先入先保，你的源永远保留，公共源重复直接丢弃
+    # 3. 合并解析（私源优先）
     raw = parse_mix(my_private_src + backup_all)
     print(f"📥合并后待处理总数：{len(raw)}个")
 
-    # ============== 宽松校验，不杀你的源 ==============
+    # 4. 存活校验
     ok = []
     bad = 0
     with ThreadPoolExecutor(max_workers=10) as ex:
@@ -147,23 +160,29 @@ def main():
                 ok.append((n,u))
             else:
                 bad+=1
-    print(f"✅最终存活：{len(ok)}个 | ❌仅剔除彻底无效死链：{bad}个")
+    print(f"✅存活校验后：{len(ok)}个 | ❌剔除无效链：{bad}个")
 
-    # ============== 分组排序，不打乱你的源结构 ==============
+    # ========== 新增：只保留1080p及以上高清频道 ==========
+    hd_list = []
+    for n,u in ok:
+        if is_hd_channel(n, u):
+            hd_list.append((n,u))
+    print(f"🎯筛选1080p+高清频道：{len(hd_list)}个")
+
+    # ========== 分组排序 ==========
     bucket = {g["name"]:[] for g in CATEGORIES}
     bucket["其他频道"] = []
-    for item in ok:
-        bucket[match_group(item[0])].append(item)
-    # 仅对央视/卫视做规整排序，不影响你的源优先级
+    for n,u in hd_list:
+        bucket[match_group(n)].append((n,u))
+    
     bucket["📺央视频道"].sort(key=lambda x:get_cctv_sort_key(x[0]))
     bucket["📺卫视频道"].sort(key=lambda x:get_websort(x[0]))
 
-    # ============== 【彻底覆盖：先删旧文件，再写新文件】 ==============
+    # ========== 彻底覆盖生成新文件 ==========
     if os.path.exists(OUT_M3U):
         os.remove(OUT_M3U)
-        print("🗑️ 旧iptv.m3u已彻底删除，准备全新覆盖生成")
+        print("🗑️ 旧iptv.m3u已删除")
 
-    # 生成标准M3U
     m3u = ['#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"']
     order = [g["name"] for g in CATEGORIES] + ["其他频道"]
     for gname in order:
@@ -171,15 +190,14 @@ def main():
             m3u.append(f'#EXTINF:-1 group-title="{gname}",{n}')
             m3u.append(u)
 
-    # 写入全新文件
     with open(OUT_M3U,"w",encoding="utf-8") as f:
         f.write("\n".join(m3u)+"\n")
 
     # 日志记录
-    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 私源优先终版｜私源{len(my_private_src)}｜总{len(raw)}｜存活{len(ok)}\n"
+    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 私源优先｜总{len(raw)}｜存活{len(ok)}｜高清{len(hd_list)}\n"
     with open(LOG_TXT,"a",encoding="utf-8") as f:
         f.write(log)
-    print(log + "🎉执行完毕：你的源绝对优先，不分地区，全频道保留，彻底覆盖无残留！")
+    print(log + "🎉执行完毕：仅保留1080p+高清频道！")
 
 if __name__ == "__main__":
     main()
