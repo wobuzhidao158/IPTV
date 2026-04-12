@@ -19,7 +19,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # 【核心修复】超时时间从10分钟改成15分钟，给足测速+排序时间
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -38,11 +39,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "bot@example.com"
-          # 【核心】强制拉取远程代码，自动合并冲突
           git pull origin main --rebase --autostash
-          # 暂存变更
           git add *.m3u *.txt
-          # 提交
           git commit -m "Auto update m3u [skip ci]" || true
-          # 【核心】强制推送，覆盖远程，100%成功
           git push --force origin HEAD
