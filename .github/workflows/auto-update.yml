@@ -4,16 +4,16 @@ permissions:
 on:
   push:
     branches: [ main ]
-    # 只改核心文件才触发，杜绝乱触发
+    # 仅核心文件触发，杜绝README/无关修改乱触发
     paths:
       - 'update.py'
       - '.github/workflows/auto-update.yml'
       - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '0 16 * * *'  # UTC 16:00 = 北京时间 00:00 每日自动更新
   workflow_dispatch:
 
-# 强制单任务，新任务直接砍旧任务，绝不堆积
+# 强制单任务：新任务直接取消旧任务，永远只跑一个，绝不堆积
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -23,9 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - name: 拉取代码
+        uses: actions/checkout@v4
 
-      - name: 配置Python
+      - name: 配置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -36,12 +37,14 @@ jobs:
       - name: 执行更新脚本
         run: python update.py
 
-      - name: 提交更新
+      - name: 提交更新文件
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "bot@example.com"
           git add *.m3u *.txt
           if [[ -n $(git status --porcelain) ]]; then
-            git commit -m "Auto update m3u"
+            git commit -m "Auto update m3u [skip ci]"
             git push
+          else
+            echo "无文件变更，跳过提交"
           fi
