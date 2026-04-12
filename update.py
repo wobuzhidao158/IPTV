@@ -209,3 +209,159 @@ def main():
 
 if __name__ == "__main__":
     main()
+# -*- coding: utf-8 -*-
+# 【空源修复版】必出频道 + 放宽验证 + 防全灭
+import os
+import requests
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import re
+
+# ========== 基础配置 ==========
+LOCAL_TXT = "直播源.txt"
+# 你自己的API
+OWN_REMOTE = "https://zhibo.cc.cd/api.php?token=BVna62di&type=txt"
+OUT_M3U = "iptv.m3u"
+LOG_TXT = "update_log.txt"
+# 【修复1】超时改长，避免全灭
+CHECK_TIMEOUT = 6
+BACKUP_POOL = [
+    "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
+]
+# ==============================
+
+CCTV_ORDER = [
+    "CCTV-1","CCTV-2","CCTV-3","CCTV-4","CCTV-5","CCTV-5+",
+    "CCTV-6","CCTV-7","CCTV-8","CCTV-9","CCTV-10","CCTV-11",
+    "CCTV-12","CCTV-13","CCTV-14","CCTV-15","CCTV-16","CCTV-17",
+    "CCTV-4K","CCTV-8K"
+]
+
+CATEGORIES = [
+    {"name":"📺央视频道","kw":["CCTV","央视","cctv","中央"]},
+    {"name":"📺卫视频道","kw":["卫视","江苏","浙江","湖南","北京","东方","山东","安徽","湖北","广东","四川","重庆","河南"]},
+    {"name":"🎬影视频道","kw":["电影","影院","院线","影视","剧场"]},
+    {"name":"🧒少儿频道","kw":["少儿","儿童","卡通","动画","动漫"]},
+    {"name":"🇭🇰香港频道","kw":["香港","TVB","ViuTV"]},
+    {"name":"🌊台湾频道","kw":["台湾","中天","东森","纬To"]}
+]
+
+def get_cctv_number(name):
+    match = re.search(r'CCTV[-]?(\d+)(\+)?', name, re.IGNORECASE)
+    if match:
+        num = int(match.group(1))
+        return num + 0.5 if match.group(2) == '+' else num
+    alias = {"一套":1,"二套":2,"三套":3,"四套":4,"五套":5,"六套":6,"七套":7,"八套":8,"九套":9,"十套":10,"十一套":11,"十二套":12,"十三套":13,"十四套":14,"十五套":15,"十六套":16,"十七套":17}
+    for a,n in alias.items():
+        if a in name:return n
+    return 99 if '4K' in name or '8K' in name else 100
+
+def get_lines_from_text(text):
+    return [x.strip() for x in text.splitlines() if x.strip()]
+
+def fetch_text(url):
+    try:
+        r=requests.get(url,timeout=10,verify=False)
+        r.encoding="utf-8"
+        return get_lines_from_text(r.text)
+    except:
+        print(f"拉取失败：{url}")
+        return []
+
+# 【修复2】超级宽松验证：只要是http就保留（避免全灭）
+def is_loose_valid(url):
+    return url.startswith("http")
+
+# 【修复3】可选严格版（保留）
+def is_strict_live(url):
+    try:
+        return requests.head(url,timeout=CHECK_TIMEOUT,allow_redirects=True,verify=False).status_code in (200,301,302)
+    except:
+        return False
+
+def parse_all(lines):
+    chans=[]
+    seen=set()
+    i=0
+    while i<len(lines):
+        s=lines[i]
+        if "," in s and not s.startswith("#"):
+            n,u=s.split(",",1)
+            n,u=n.strip(),u.strip()
+            if u.startswith("http") and u not in seen:
+                seen.add(u)
+                chans.append((n,u))
+            i+=1
+        elif s.startswith("#EXTINF") and i+1<len(lines):
+            n=s.split(",")[-1].strip()
+            u=lines[i+1].strip()
+            if u.startswith("http") and u not in seen:
+                seen.add(u)
+                chans.append((n,u))
+            i+=2
+        elif s.startswith("http") and s not in seen:
+            seen.add(s)
+            chans.append((f"未知{i}",s))
+            i+=1
+        else:
+            i+=1
+    return chans
+
+def match_group(name):
+    n=name.lower()
+    for g in CATEGORIES:
+        for k in g["kw"]:
+            if k.lower() in n:
+                return g["name"]
+    return "其他频道"
+
+def main():
+    requests.packages.urllib3.disable_warnings()
+    local=fetch_text(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
+    remote=fetch_text(OWN_REMOTE)
+    backup=[]
+    for bu in BACKUP_POOL:
+        backup+=fetch_text(bu)
+    
+    raw=parse_all(local+remote+backup)
+    print(f"总源：{len(raw)}")
+
+    # 【修复4】宽松模式：先全保留，再简单筛
+    # 不想严格测速就用这行（保证不空）
+    good= [ (n,u) for n,u in raw if is_loose_valid(u) ]
+    
+    # 要严格测速就注释上面、开下面
+    # good=[]
+    # with ThreadPoolExecutor(10) as e:
+    #     fs={e.submit(is_strict_live,u):(n,u) for n,u in raw}
+    #     for f in as_completed(fs):
+    #         n,u=fs[f]
+    #         if f.result():good.append((n,u))
+
+    print(f"有效：{len(good)}")
+
+    bucket={g["name"]:[] for g in CATEGORIES}
+    bucket["其他频道"]=[]
+    for n,u in good:
+        bucket[match_group(n)].append((n,u))
+
+    # 央视排序
+    bucket["📺央视频道"]=sorted(bucket["📺央视频道"],key=lambda x:get_cctv_number(x[0]))
+
+    # 生成M3U（强制UTF-8 + 正确头）
+    m3u=["#EXTM3U x-tvg-url=\"https://epg.112114.xyz/epg.xml.gz\""]
+    for g in [g["name"] for g in CATEGORIES]+["其他频道"]:
+        for n,u in bucket[g]:
+            m3u.append(f"#EXTINF:-1 group-title=\"{g}\",{n}")
+            m3u.append(u)
+    
+    with open(OUT_M3U,"w",encoding="utf-8") as f:
+        f.write("\n".join(m3u)+"\n")
+    
+    log=f"[{datetime.now()}] 空源修复版 | 总{len(raw)} | 有效{len(good)}\n"
+    with open(LOG_TXT,"a",encoding="utf-8") as f:
+        f.write(log)
+    print(log+"完成")
+
+if __name__=="__main__":
+    main()
