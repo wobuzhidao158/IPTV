@@ -4,42 +4,27 @@ permissions:
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'update.py'
-      - '.github/workflows/auto-update.yml'
-      - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'
+    cron: '0 16 * * *'
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 【核心修复】超时时间从10分钟改成15分钟，给足测速+排序时间
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
       - name: 配置Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
       - name: 安装依赖
         run: pip install requests
-
-      - name: 执行更新脚本
+      - name: 执行新疆专属脚本
         run: python update.py
-
-      - name: 强制拉取+强制提交，彻底解决冲突
+      - name: 提交更新
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name "bot"
           git config user.email "bot@example.com"
-          git pull origin main --rebase --autostash
-          git add *.m3u *.txt
-          git commit -m "Auto update m3u [skip ci]" || true
-          git push --force origin HEAD
+          git add .
+          git commit -m "auto update for xinjiang" || echo "无变更"
+          git push --force
