@@ -1,4 +1,35 @@
 name: 直播源自动更新
+# 👇 关键：强制赋予读写权限，解决手动触发权限不足
+permissions:
+  contents: write  # 允许读写仓库内容（提交M3U文件必须）
+  actions: write   # 允许操作Actions
+  pull-requests: write  # 可选，按需开启
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # 👇 关键：保留凭证，允许后续步骤提交
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      - name: Run update script
+        run: python update.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 👇 关键：传递token给脚本
+
 on:
   push:
   schedule:
