@@ -16,7 +16,7 @@ BACKUP_POOL = [
 ]
 # =================================
 
-# 你要的带Emoji图标分类1:1匹配
+# 带Emoji图标分类
 CATEGORIES = [
     {"name":"📺央视频道","kw":["CCTV","央视","cctv","中央"]},
     {"name":"📺卫视频道","kw":["卫视","江苏","浙江","湖南","北京","东方","山东","安徽","湖北","广东","四川","重庆","河南"]},
@@ -40,7 +40,7 @@ def fetch_text(url):
     except:
         return []
 
-# 【已修复】双保险存活检测：先HEAD失败再GET，防拦截、不卡死
+# 【双保险存活检测】先HEAD失败再GET，防拦截、不卡死
 def is_live(url):
     if not url.startswith("http"):
         return False
@@ -94,7 +94,7 @@ def match_group(name):
     return "其他频道"
 
 def main():
-    # 1.读取本地+你的专属远程+全网备用池，三路合并
+    # 1. 三路源合并：本地+专属远程+全网备用池
     local = fetch_text(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
     own_remote = fetch_text(OWN_REMOTE)
     all_backup = []
@@ -103,11 +103,11 @@ def main():
     total_lines = local + own_remote + all_backup
     print(f"📥汇总源行数：本地{len(local)}+专属{len(own_remote)}+备用池{len(all_backup)}")
 
-    # 2.解析成频道链接对
+    # 2. 解析频道链接对
     raw_chans = parse_all(total_lines)
     print(f"🔍初步解析待检测：{len(raw_chans)}个")
 
-    # 3.自动测速：剔除失效，只留活源（核心！旧的坏源自动删掉）
+    # 3. 自动测速，剔除失效源
     good_chans = []
     bad_cnt = 0
     for name,url in raw_chans:
@@ -117,25 +117,25 @@ def main():
             bad_cnt += 1
     print(f"✅测速完毕：有效留存{len(good_chans)}个，失效剔除{bad_cnt}个")
 
-    # 4.按带图标分组归类
+    # 4. 按分类分组
     bucket = {g["name"]:[] for g in CATEGORIES}
     bucket["其他频道"] = []
     for name,url in good_chans:
         bucket[match_group(name)].append((name,url))
 
-    # 5.生成最终带图标M3U
+    # 5. 生成带分类的M3U
     m3u = ['#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"']
     order = [g["name"] for g in CATEGORIES] + ["其他频道"]
     for gname in order:
         for name,url in bucket[gname]:
             m3u.append(f'#EXTINF:-1 group-title="{gname}",{name}')
-            url
+            m3u.append(url)
 
-    # 6.写入覆盖你的m3u，链接自动更新生效
+    # 6. 写入最终M3U
     with open(OUT_M3U,"w",encoding="utf-8") as f:
         f.write("\n".join(m3u)+"\n")
 
-    # 日志留存记录
+    # 7. 写入更新日志
     log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 方案B满血更新｜汇总解析{len(raw_chans)}｜剔除失效{bad_cnt}｜最终有效{len(good_chans)}\n"
     with open(LOG_TXT,"a",encoding="utf-8") as f:
         f.write(log)
