@@ -40,12 +40,18 @@ def fetch_text(url):
     except:
         return []
 
-# 快速存活检测，只筛明显死链，控时间不炸
+# 【已修复】双保险存活检测：先HEAD失败再GET，防拦截、不卡死
 def is_live(url):
     if not url.startswith("http"):
         return False
     try:
         res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True)
+        if res.status_code in (200,301,302):
+            return True
+    except:
+        pass
+    try:
+        res = requests.get(url, timeout=CHECK_TIMEOUT, stream=True)
         return res.status_code in (200,301,302)
     except:
         return False
@@ -123,7 +129,7 @@ def main():
     for gname in order:
         for name,url in bucket[gname]:
             m3u.append(f'#EXTINF:-1 group-title="{gname}",{name}')
-            m3u.append(url)
+            url
 
     # 6.写入覆盖你的m3u，链接自动更新生效
     with open(OUT_M3U,"w",encoding="utf-8") as f:
