@@ -33,7 +33,7 @@ jobs:
 
       - name: 运行私源优先脚本
         run: python update.py
-        timeout-minutes: 8
+        timeout-minutes: 15
 
       - name: 强制提交覆盖远程
         run: |
