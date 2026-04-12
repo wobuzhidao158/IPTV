@@ -1,30 +1,46 @@
-name: 直播源自动更新
+name: 直播源自动更新（新疆专属版）
 permissions:
   contents: write
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'update.py'
+      - '.github/workflows/auto-update.yml'
+      - '直播源.txt'
   schedule:
-    cron: '0 16 * * *'
-  workflow_dispatch:
+    - cron: '0 16 * * *'  # 北京时间每日0点自动运行
+  workflow_dispatch:  # 支持手动触发
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 15  # 15分钟超时兜底，新疆慢网也能跑完
     steps:
-      - uses: actions/checkout@v4
-      - name: 配置Python
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 配置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: 'pip'
+
       - name: 安装依赖
         run: pip install requests
-      - name: 执行新疆专属脚本
+
+      - name: 执行新疆专属更新脚本
         run: python update.py
-      - name: 提交更新
+
+      - name: 强制拉取+提交，彻底解决冲突
         run: |
-          git config user.name "bot"
+          git config user.name "github-actions[bot]"
           git config user.email "bot@example.com"
-          git add .
-          git commit -m "auto update for xinjiang" || echo "无变更"
-          git push --force
+          git pull origin main --rebase --autostash
+          git add *.m3u *.txt
+          git commit -m "Auto update IPTV [skip ci]" || echo "无文件变更，跳过提交"
+          git push --force origin HEAD
