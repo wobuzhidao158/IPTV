@@ -1,46 +1,47 @@
 name: 直播源自动更新
 
-# 全局权限，统一手动/自动/定时触发权限
 permissions:
   contents: write
   actions: write
   pull-requests: write
 
-# 触发条件
 on:
   push:
     branches: [ main ]
+    # 【关键优化】仅在修改核心文件时触发，避免README提交触发工作流
+    paths:
+      - 'update.py'
+      - '.github/workflows/auto-update.yml'
+      - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'  # UTC 16:00 = 北京时间 00:00 每日自动更新
+    - cron: '0 16 * * *'
   workflow_dispatch:
 
-# 手动优先+任务互斥，彻底解决取消/冲突
+# 严格单任务+手动优先，彻底杜绝多任务并行
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - name: 拉取完整代码
+      - name: 拉取代码
         uses: actions/checkout@v4
         with:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: 配置Python环境
+      - name: 配置Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          # 彻底删除cache: pip，100%解决缓存报错
-          # cache: "pip"
 
       - name: 安装依赖
         run: |
           python -m pip install --upgrade pip
-          pip install requests --quiet  # --quiet 消除安装警告
+          pip install requests --quiet
 
       - name: 执行更新脚本
         run: python update.py
@@ -48,21 +49,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: 提交更新文件
+      - name: 提交更新
         run: |
-          # 配置Git用户
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # 拉取最新代码，避免冲突
           git pull origin main --quiet
-          # 暂存变更
           git add *.m3u *.txt
-          # 检查是否有变更，避免空提交警告
           if [[ -n $(git status --porcelain) ]]; then
-            git commit -m "Auto update live sources [skip ci]" --quiet
-            # 强制用token推送
+            git commit -m "Auto update m3u [skip ci]" --quiet
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main --quiet
-            echo "✅ 提交成功"
           else
-            echo "ℹ️ 无文件变更，跳过提交"
+            echo "无变更，跳过提交"
           fi
