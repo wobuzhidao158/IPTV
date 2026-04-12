@@ -1,73 +1,37 @@
 name: 直播源自动更新
-
-# 全局权限拉满，保证提交100%成功
 permissions:
   contents: write
-  actions: write
-  pull-requests: write
-
-# 触发条件：仅核心文件触发，彻底杜绝README等无关修改触发任务
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'update.py'
-      - '.github/workflows/auto-update.yml'
-      - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'  # UTC 16:00 = 北京时间 00:00 每日自动更新
+    - cron: '0 16 * * *'
   workflow_dispatch:
-
-# 【核心锁死】彻底关闭并发取消，所有任务完整跑完，绝不中途砍断
-# 手动/自动/定时任务，全部完整执行，绝不取消任何一个
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 超时时间放宽到10分钟，给足测速时间，绝对不超时
     timeout-minutes: 10
     steps:
-      - name: 拉取完整代码
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: 配置Python环境
+      - name: 装Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: 安装依赖
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests --quiet
+      - name: 装依赖
+        run: pip install requests
 
-      - name: 执行更新脚本
+      - name: 跑脚本生成m3u
         run: python update.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: 提交更新文件（强制成功，绝不跳过）
+      - name: 直接提交保存
         run: |
-          # 配置Git用户
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # 强制拉取最新代码，彻底避免冲突
-          git pull origin main --rebase --autostash --quiet
-          # 暂存所有变更
-          git add *.m3u *.txt
-          # 检查变更，无论有无都保证流程完整
-          if [[ -n $(git status --porcelain) ]]; then
-            # 强制提交，即使有冲突也自动解决
-            git commit -m "Auto update m3u [skip ci]" --quiet || true
-            # 强制推送，100%保证提交成功
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main --quiet
-            echo "✅ 直播源M3U已成功更新！"
-          else
-            echo "ℹ️ 无文件变更，直播源链接保持最新可用状态"
-          fi
+          git config user.name bot
+          git config user.email bot@qq.com
+          git add .
+          git commit -m update
+          git push
