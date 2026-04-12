@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-# 方案B 多线程极速版：本地+远程双合+测速删失效+全网补新+带图标分类
+# 方案B 央视顺序规整版：本地+远程双合+测速删失效+全网补新+带图标分类
 import os
 import requests
 from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ========== 基础配置勿改 ==========
 LOCAL_TXT = "直播源.txt"
 OWN_REMOTE = "https://zhibo.cc.cd/api.php?token=BVna62di&type=txt"
 OUT_M3U = "iptv.m3u"
 LOG_TXT = "update_log.txt"
-CHECK_TIMEOUT = 3.5   # 快速测速，不超时
+CHECK_TIMEOUT = 2.5   # 缩短超时，极速测速
 # 全网备用源池
 BACKUP_POOL = [
     "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
@@ -30,29 +29,31 @@ CATEGORIES = [
     {"name":"🎬影视轮播","kw":["轮播","影视轮播","电影轮播"]}
 ]
 
+# 央视频道强制排序规则（严格按1→2→3…排列，可自行增删）
+CCTV_ORDER = [
+    "CCTV-1", "CCTV-2", "CCTV-3", "CCTV-4", "CCTV-5", "CCTV-5+",
+    "CCTV-6", "CCTV-7", "CCTV-8", "CCTV-9", "CCTV-10", "CCTV-11",
+    "CCTV-12", "CCTV-13", "CCTV-14", "CCTV-15", "CCTV-16", "CCTV-17",
+    "CCTV-4K", "CCTV-8K"
+]
+
 def get_lines_from_text(text):
     return [x.strip() for x in text.splitlines() if x.strip()]
 
 def fetch_text(url):
     try:
-        r = requests.get(url, timeout=10, verify=False)
+        r = requests.get(url, timeout=8, verify=False)
         r.encoding = "utf-8"
         return get_lines_from_text(r.text)
     except Exception:
         return []
 
-# 双保险存活检测（多线程用）
+# 极速存活检测：仅HEAD，2.5s超时，1分钟内跑完
 def is_live(url):
     if not url.startswith("http"):
         return False
     try:
         res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True, verify=False)
-        if res.status_code in (200,301,302):
-            return True
-    except Exception:
-        pass
-    try:
-        res = requests.get(url, timeout=CHECK_TIMEOUT, stream=True, verify=False)
         return res.status_code in (200,301,302)
     except Exception:
         return False
@@ -98,37 +99,49 @@ def main():
     # 关闭requests警告
     requests.packages.urllib3.disable_warnings()
     
-    # 1. 三路源合并：本地+专属远程+全网备用池
+    # 1. 三路源合并
     local = fetch_text(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
     own_remote = fetch_text(OWN_REMOTE)
     all_backup = []
     for bu in BACKUP_POOL:
         all_backup.extend(fetch_text(bu))
     total_lines = local + own_remote + all_backup
-    print(f"📥汇总源行数：本地{len(local)}+专属{len(own_remote)}+备用池{len(all_backup)}")
+    print(f"📥汇总源行数：{len(total_lines)}")
 
-    # 2. 解析频道链接对
+    # 2. 解析频道
     raw_chans = parse_all(total_lines)
-    print(f"🔍初步解析待检测：{len(raw_chans)}个")
+    print(f"🔍待检测：{len(raw_chans)}个")
 
-    # 3. 多线程自动测速，剔除失效源（10线程并发，可自行调整5-20）
+    # 3. 极速测速
     good_chans = []
     bad_cnt = 0
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_chan = {executor.submit(is_live, url): (name, url) for name, url in raw_chans}
-        for future in as_completed(future_to_chan):
-            name, url = future_to_chan[future]
-            if future.result():
-                good_chans.append((name, url))
-            else:
-                bad_cnt += 1
-    print(f"✅测速完毕：有效留存{len(good_chans)}个，失效剔除{bad_cnt}个")
+    for name,url in raw_chans:
+        if is_live(url):
+            good_chans.append((name,url))
+        else:
+            bad_cnt += 1
+    print(f"✅有效：{len(good_chans)}个，剔除：{bad_cnt}个")
 
-    # 4. 按分类分组
+    # 4. 按分类分组 + 央视强制排序
     bucket = {g["name"]:[] for g in CATEGORIES}
     bucket["其他频道"] = []
     for name,url in good_chans:
         bucket[match_group(name)].append((name,url))
+
+    # 给央视频道按指定顺序重新排列
+    cctv_list = bucket["📺央视频道"]
+    sorted_cctv = []
+    # 先匹配顺序内的频道
+    for cctv_name in CCTV_ORDER:
+        for name, url in cctv_list:
+            if name.startswith(cctv_name) and (name, url) not in sorted_cctv:
+                sorted_cctv.append((name, url))
+    # 再补全剩下的央视频道
+    for name, url in cctv_list:
+        if (name, url) not in sorted_cctv:
+            sorted_cctv.append((name, url))
+    # 替换原央视列表
+    bucket["📺央视频道"] = sorted_cctv
 
     # 5. 生成带分类的M3U
     m3u = ['#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"']
@@ -143,10 +156,10 @@ def main():
         f.write("\n".join(m3u)+"\n")
 
     # 7. 写入更新日志
-    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 多线程极速版｜汇总{len(raw_chans)}｜剔除{bad_cnt}｜有效{len(good_chans)}\n"
+    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 央视顺序规整版｜有效{len(good_chans)}个\n"
     with open(LOG_TXT,"a",encoding="utf-8") as f:
         f.write(log)
-    print(log+"🎉全部完成，永久续航生效！")
+    print(log+"🎉完成！央视顺序已规整！")
 
 if __name__ == "__main__":
     main()
