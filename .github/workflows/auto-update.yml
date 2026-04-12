@@ -1,13 +1,9 @@
-name: 直播源自动更新（新疆专属版）
+name: 直播源三合一自动更新（新疆终版）
 permissions:
   contents: write
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'update.py'
-      - '.github/workflows/auto-update.yml'
-      - '直播源.txt'
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
@@ -24,7 +20,7 @@ jobs:
       - name: 拉取代码
         uses: actions/checkout@v4
 
-      - name: 配置Python环境
+      - name: 配置Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -32,14 +28,14 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
-      - name: 执行新疆专属更新脚本
+      - name: 运行三合一脚本
         run: python update.py
 
-      - name: 强制拉取+提交，彻底解决冲突
+      - name: 提交更新防冲突
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "bot@example.com"
           git pull origin main --rebase --autostash
           git add *.m3u *.txt
-          git commit -m "Auto update IPTV [skip ci]" || echo "无文件变更，跳过提交"
+          git commit -m "auto sync for xinjiang [skip ci]" || echo "无变更跳过"
           git push --force origin HEAD
