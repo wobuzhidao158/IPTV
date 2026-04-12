@@ -1043,30 +1043,30 @@ https://goodiptv.club/douyu/9815091
 https://goodiptv.club/douyu/3310454
 #EXTINF:-1 group-title="其他频道",小小甜的骑士
 https://goodiptv.club/douyu/9236042
-#EXTINF:-1 group-title="其他频道",Beijing Traffic Radio TV [Geo-blocked]
-http://123.56.24.28:1935/live/fm1039/96K/tzwj_video.m3u8
-#EXTINF:-1 group-title="其他频道",CETV2 (576p)
-http://117.161.133.51:81/gitv_live/G_CETV-2/G_CETV-2.m3u8?p=GITV
-#EXTINF:-1 group-title="其他频道",Chifeng Comprehensive News Chanel
-http://play1-qk.nmtv.cn/live/1735546697341033.m3u8
-#EXTINF:-1 group-title="其他频道",Anshun Comprehensive News Channel
-https://hplayer1.juyun.tv/camera/154379194.m3u8
-#EXTINF:-1 group-title="其他频道",CGTN (1080p)
-https://english-livebkali.cgtn.com/live/encgtn.m3u8
-#EXTINF:-1 group-title="其他频道",BRTV Kaku Childrens Channel
-http://223.111.191.105/downflv.brtvcloud.com/kkkkasd/winfr.m3u8
-#EXTINF:-1 group-title="其他频道",Beijing Youth Radio [Geo-blocked]
-http://audiolive.rbc.cn:1935/live/am927/96K/tzwj_video.m3u8
-#EXTINF:-1 group-title="其他频道",CETV-1
-http://121.19.134.246:808/hls/62/index.m3u8
 #EXTINF:-1 group-title="其他频道",Foshan News TV
 http://dslive.grtn.cn/fszh/sd/live.m3u8
-#EXTINF:-1 group-title="其他频道",Ando TV
-http://play.kankanlive.com/live/1711956137852982.m3u8
+#EXTINF:-1 group-title="其他频道",CETV-1
+http://121.19.134.246:808/hls/62/index.m3u8
+#EXTINF:-1 group-title="其他频道",Beijing Traffic Radio TV [Geo-blocked]
+http://123.56.24.28:1935/live/fm1039/96K/tzwj_video.m3u8
 #EXTINF:-1 group-title="其他频道",CGTN (1080p)
 https://amg00405-rakutentv-cgtn-rakuten-i9tar.amagi.tv/master.m3u8
+#EXTINF:-1 group-title="其他频道",BRTV Kaku Childrens Channel
+http://223.111.191.105/downflv.brtvcloud.com/kkkkasd/winfr.m3u8
 #EXTINF:-1 group-title="其他频道",CETV1 (576p)
 http://117.161.133.51:81/gitv_live/G_CETV-1/G_CETV-1.m3u8?p=GITV
+#EXTINF:-1 group-title="其他频道",Ando TV
+http://play.kankanlive.com/live/1711956137852982.m3u8
+#EXTINF:-1 group-title="其他频道",Anshun Comprehensive News Channel
+https://hplayer1.juyun.tv/camera/154379194.m3u8
+#EXTINF:-1 group-title="其他频道",Chifeng Comprehensive News Chanel
+http://play1-qk.nmtv.cn/live/1735546697341033.m3u8
+#EXTINF:-1 group-title="其他频道",Beijing Youth Radio [Geo-blocked]
+http://audiolive.rbc.cn:1935/live/am927/96K/tzwj_video.m3u8
+#EXTINF:-1 group-title="其他频道",CETV2 (576p)
+http://117.161.133.51:81/gitv_live/G_CETV-2/G_CETV-2.m3u8?p=GITV
+#EXTINF:-1 group-title="其他频道",CGTN (1080p)
+https://english-livebkali.cgtn.com/live/encgtn.m3u8
 #EXTINF:-1 group-title="其他频道",CGTN Documentary (1080p)
 https://amg00405-rakutentv-cgtndocumentary-rakuten-0ql8j.amagi.tv/master.m3u8
 #EXTINF:-1 group-title="其他频道",Golden Eagle Cartoon
