@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 方案B满血版：本地+远程双合+测速删失效+全网补新+带图标分类（Actions修复版）
+# 方案B满血版：本地+远程双合+测速删失效+全网补新+带图标分类（Actions稳跑版）
 import os
 import requests
 from datetime import datetime
@@ -32,7 +32,7 @@ def get_lines_from_text(text):
 
 def fetch_text(url):
     try:
-        r = requests.get(url, timeout=10)
+        r = requests.get(url, timeout=10, verify=False)  # verify=False 适配部分HTTPS源
         r.encoding = "utf-8"
         return get_lines_from_text(r.text)
     except Exception:
@@ -43,13 +43,13 @@ def is_live(url):
     if not url.startswith("http"):
         return False
     try:
-        res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True)
+        res = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True, verify=False)
         if res.status_code in (200,301,302):
             return True
     except Exception:
         pass
     try:
-        res = requests.get(url, timeout=CHECK_TIMEOUT, stream=True)
+        res = requests.get(url, timeout=CHECK_TIMEOUT, stream=True, verify=False)
         return res.status_code in (200,301,302)
     except Exception:
         return False
@@ -92,6 +92,9 @@ def match_group(name):
     return "其他频道"
 
 def main():
+    # 关闭requests警告
+    requests.packages.urllib3.disable_warnings()
+    
     # 三路合并
     local = fetch_text(LOCAL_TXT) if os.path.exists(LOCAL_TXT) else []
     own_remote = fetch_text(OWN_REMOTE)
@@ -118,7 +121,7 @@ def main():
     for name,url in good_chans:
         bucket[match_group(name)].append((name,url))
 
-    # 修复点：完整写入extinf+url双行，绝不漏链
+    # 生成M3U
     m3u = ['#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"']
     order = [g["name"] for g in CATEGORIES] + ["其他频道"]
     for gname in order:
@@ -129,10 +132,10 @@ def main():
     with open(OUT_M3U,"w",encoding="utf-8") as f:
         f.write("\n".join(m3u)+"\n")
 
-    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 方案B修复版｜汇总{len(raw_chans)}｜剔除{bad_cnt}｜有效{len(good_chans)}\n"
+    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 方案B稳跑版｜汇总{len(raw_chans)}｜剔除{bad_cnt}｜有效{len(good_chans)}\n"
     with open(LOG_TXT,"a",encoding="utf-8") as f:
         f.write(log)
-    print(log+"🎉全部完成")
+    print(log+"🎉全部完成，永久续航生效！")
 
 if __name__ == "__main__":
     main()
