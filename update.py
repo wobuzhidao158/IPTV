@@ -40,7 +40,7 @@ def fetch_text(url):
     except:
         return []
 
-# 【双保险存活检测】先HEAD失败再GET，防拦截、不卡死
+# 双保险存活检测：先HEAD失败再GET，防拦截、不卡死
 def is_live(url):
     if not url.startswith("http"):
         return False
