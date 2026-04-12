@@ -1,39 +1,41 @@
 name: 直播源自动更新
 
+# 全局权限，统一手动/自动/定时触发权限
 permissions:
   contents: write
   actions: write
   pull-requests: write
 
+# 触发条件：仅核心文件触发，避免README/无关修改跑工作流
 on:
   push:
     branches: [ main ]
-    # 【关键优化】仅在修改核心文件时触发，避免README提交触发工作流
     paths:
       - 'update.py'
       - '.github/workflows/auto-update.yml'
       - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'
+    - cron: '0 16 * * *'  # UTC 16:00 = 北京时间 00:00
   workflow_dispatch:
 
-# 严格单任务+手动优先，彻底杜绝多任务并行
+# 【终极修复】手动优先+永不取消+自动互斥
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # 仅取消自动/定时任务，手动任务100%完整运行，绝不中途砍断
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - name: 拉取代码
+      - name: 拉取完整代码
         uses: actions/checkout@v4
         with:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: 配置Python
+      - name: 配置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -49,15 +51,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: 提交更新
+      - name: 提交更新文件
         run: |
+          # 配置Git用户
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          # 拉取最新代码，彻底避免冲突
           git pull origin main --quiet
+          # 暂存变更
           git add *.m3u *.txt
+          # 检查是否有变更，避免空提交
           if [[ -n $(git status --porcelain) ]]; then
-            git commit -m "Auto update m3u [skip ci]" --quiet
+            git commit -m "Auto update live sources [skip ci]" --quiet
+            # 强制用token推送，确保提交成功
             git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main --quiet
+            echo "✅ 提交成功"
           else
-            echo "无变更，跳过提交"
+            echo "ℹ️ 无文件变更，跳过提交"
           fi
