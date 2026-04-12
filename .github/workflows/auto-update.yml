@@ -1,12 +1,12 @@
-name: 直播源三合一自动更新（新疆终版）
+name: 私源优先直播源自动更新（不分地区终版）
 permissions:
   contents: write
 on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 16 * * *'
-  workflow_dispatch:
+    - cron: '0 16 * * *'  # 每日0点自动更新（北京时间）
+  workflow_dispatch:  # 支持手动触发
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
       - name: 拉取代码
         uses: actions/checkout@v4
 
-      - name: 配置Python
+      - name: 配置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -28,14 +28,14 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
-      - name: 运行三合一脚本
+      - name: 运行私源优先脚本
         run: python update.py
 
-      - name: 提交更新防冲突
+      - name: 强制提交覆盖远程
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "bot@example.com"
           git pull origin main --rebase --autostash
           git add *.m3u *.txt
-          git commit -m "auto sync for xinjiang [skip ci]" || echo "无变更跳过"
-          git push --force origin HEAD
+          git commit -m "auto update [私源优先，不分地区] [skip ci]" || echo "无变更跳过提交"
+          git push --force origin HEAD  # 强制推送，彻底覆盖远程旧文件
