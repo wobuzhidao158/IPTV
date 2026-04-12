@@ -9,8 +9,8 @@ on:
       - '.github/workflows/auto-update.yml'
       - '直播源.txt'
   schedule:
-    - cron: '0 16 * * *'  # 北京时间每日0点自动运行
-  workflow_dispatch:  # 支持手动触发
+    - cron: '0 16 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # 15分钟超时兜底，新疆慢网也能跑完
+    timeout-minutes: 15
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
@@ -28,7 +28,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: 'pip'
 
       - name: 安装依赖
         run: pip install requests
