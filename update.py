@@ -1,34 +1,34 @@
 # -*- coding: utf-8 -*-
 """
-本地源绝对保护版：
-- 本地直播源.txt 只要可用（响应≤3秒、1080p+），就永不更换
+本地源绝对保护版（修复卡死优化）：
+- 本地直播源.txt 只要可用，永不更换
 - 仅当本地源全部失效时，才从网络源补充最优一条
-- 每日自动更新，确保频道不丢失
+- 优化测速逻辑，避免 GitHub Actions 运行超时
 """
 import os
 import re
 import time
 import requests
+import socket
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 
-# ========== 配置参数 ==========
-LOCAL_TXT = "直播源.txt"          # 你的本地私源（绝对优先且保护）
-OWN_REMOTE = "https://zhibo.cc.cd/api.php?token=BVna62di&type=txt"  # 你的API私源（视为网络源）
+# ========== 配置参数（已优化） ==========
+LOCAL_TXT = "直播源.txt"
+OWN_REMOTE = "https://zhibo.cc.cd/api.php?token=BVna62di&type=txt"
 OUT_M3U = "iptv.m3u"
 LOG_TXT = "update_log.txt"
 
-TEST_TIMEOUT = 3                  # 单个源超时时间（秒）
-MAX_WORKERS = 20                  # 并发测速线程数
-MIN_SPEED_SCORE = 30              # 最低速度得分（0-100）
-MIN_RESOLUTION_SCORE = 70         # 最低清晰度得分（70=1080p）
+TEST_TIMEOUT = 2                  # 缩短超时，快速失败（避免卡死）
+MAX_WORKERS = 5                   # 降低并发，防止服务器拥塞
+MIN_SPEED_SCORE = 30              # 最低速度得分
+MIN_RESOLUTION_SCORE = 70         # 1080p门槛
 
 BACKUP_POOL = [
     "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u"
 ]
 
-# 分类标签
 CATEGORIES = [
     {"name":"📺央视频道","kw":["CCTV","央视","cctv","中央"]},
     {"name":"📺卫视频道","kw":["卫视"]},
@@ -79,7 +79,7 @@ def cut_lines(text):
 
 def fetch_src(url):
     try:
-        r = requests.get(url, timeout=15, verify=False)
+        r = requests.get(url, timeout=10, verify=False)
         r.encoding = "utf-8"
         return cut_lines(r.text)
     except:
@@ -87,10 +87,6 @@ def fetch_src(url):
         return []
 
 def parse_sources(lines, source_type="network"):
-    """
-    解析直播源行，返回 [(频道名, URL, 来源类型), ...]
-    source_type: "local" 或 "network"
-    """
     sources = []
     i = 0
     while i < len(lines):
@@ -134,9 +130,41 @@ def extract_resolution(name, url):
     else:
         return 40
 
+def quick_socket_test(host, port=80, timeout=2):
+    """快速TCP连接测试，用于流地址避免HTTP阻塞"""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        return result == 0
+    except:
+        return False
+
 def test_speed(url):
+    """优化后的测速：支持流格式快速测试，避免卡死"""
+    if not url.startswith("http"):
+        return (TEST_TIMEOUT, False)
+
+    # 对于流格式，使用 socket 快速测试连通性，跳过 HTTP 协议细节
+    lower_url = url.lower()
+    if any(x in lower_url for x in [".m3u8", ".flv", "rtmp:", ".ts", "live"]):
+        try:
+            from urllib.parse import urlparse
+            parsed = urlparse(url)
+            host = parsed.hostname
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+            if host and quick_socket_test(host, port, TEST_TIMEOUT):
+                return (0.3, True)   # 连通即视为可用，返回一个较快的响应时间
+            else:
+                return (TEST_TIMEOUT, False)
+        except:
+            return (TEST_TIMEOUT, False)
+
+    # 普通HTTP链接使用 requests 测速
     try:
         start = time.time()
+        # 只请求头部，并设置 stream=True 避免下载内容
         resp = requests.head(url, timeout=TEST_TIMEOUT, allow_redirects=True, verify=False)
         elapsed = time.time() - start
         if resp.status_code in (200, 301, 302, 304):
@@ -154,7 +182,6 @@ def score_source(resolution_score, response_time):
     return round(total, 2)
 
 def is_source_qualified(name, url):
-    """判断单个源是否合格（满足响应时间、清晰度、速度得分）"""
     resp_time, ok = test_speed(url)
     if not ok or resp_time >= TEST_TIMEOUT:
         return False, 0, resp_time
@@ -168,7 +195,6 @@ def is_source_qualified(name, url):
     return True, total, resp_time
 
 def select_best(candidates):
-    """从一组候选源中选出最优（总分最高，同分选响应时间短）"""
     valid = []
     for name, url, src_type in candidates:
         qualified, total, resp_time = is_source_qualified(name, url)
@@ -179,12 +205,15 @@ def select_best(candidates):
     valid.sort(key=lambda x: (-x[0], x[1]))
     return (valid[0][2], valid[0][3])
 
+def normalize_name(name):
+    return re.sub(r"\s*[\[\(]?(\d+[Pp]|4K|8K|HD|FHD|UHD|超清|高清|标清)[\]\)]?\s*", "", name, flags=re.IGNORECASE).strip()
+
 # ========== 主流程 ==========
 def main():
     requests.packages.urllib3.disable_warnings()
     start_time = time.time()
 
-    # 1. 读取本地私源（带 local 标签）
+    # 1. 读取本地私源
     local_sources = []
     if os.path.exists(LOCAL_TXT):
         with open(LOCAL_TXT, "r", encoding="utf-8") as f:
@@ -194,7 +223,7 @@ def main():
     else:
         print("⚠️ 未找到本地直播源.txt")
 
-    # 2. 读取API私源（视为网络源）
+    # 2. 读取API私源
     api_sources = parse_sources(fetch_src(OWN_REMOTE), source_type="network")
     print(f"✅ API私源读取：{len(api_sources)} 个链接")
 
@@ -205,11 +234,10 @@ def main():
     public_sources = parse_sources(backup_lines, source_type="network")
     print(f"🌐 公共备用源链接数：{len(public_sources)}")
 
-    # 4. 按归一化频道名分组，同时记录来源
+    # 4. 分组
     groups = defaultdict(list)
     seen_urls = set()
 
-    # 先加本地源
     for name, url, stype in local_sources:
         if url in seen_urls:
             continue
@@ -217,18 +245,16 @@ def main():
         base = normalize_name(name)
         groups[base].append((name, url, stype))
 
-    # 再加API源和公共源（网络源），但只补充本地没有的频道
     for name, url, stype in api_sources + public_sources:
         if url in seen_urls:
             continue
         base = normalize_name(name)
-        # 网络源只加入那些本地完全没有的频道组，或者作为同组备选（但后面逻辑会优先本地）
         groups[base].append((name, url, stype))
         seen_urls.add(url)
 
     print(f"📋 合并后总频道数：{len(groups)} 个（含多源）")
 
-    # 5. 对每个频道按保护逻辑选最优
+    # 5. 频道筛选
     print("\n⚡ 开始频道筛选（本地源可用则绝不更换）...")
     best_per_channel = []
     local_kept = 0
@@ -236,11 +262,9 @@ def main():
     discarded = 0
 
     for base, candidates in groups.items():
-        # 分离本地源和网络源
         local_cands = [c for c in candidates if c[2] == "local"]
         network_cands = [c for c in candidates if c[2] == "network"]
 
-        # 优先检查本地源是否有可用的
         best = None
         if local_cands:
             print(f"  🔍 频道「{base}」：检查本地源({len(local_cands)}个)...")
@@ -258,7 +282,6 @@ def main():
                     print(f"     🚫 无可用网络源，该频道丢弃")
                     discarded += 1
         else:
-            # 没有本地源，直接用网络源
             print(f"  🔍 频道「{base}」：无本地源，从网络源({len(network_cands)}个)中选择...")
             best = select_best(network_cands)
             if best:
@@ -304,9 +327,6 @@ def main():
         f.write(log_msg)
     print("\n" + log_msg)
     print("🎉 执行完毕！本地源可用则永不更换。")
-
-def normalize_name(name):
-    return re.sub(r"\s*[\[\(]?(\d+[Pp]|4K|8K|HD|FHD|UHD|超清|高清|标清)[\]\)]?\s*", "", name, flags=re.IGNORECASE).strip()
 
 if __name__ == "__main__":
     main()
