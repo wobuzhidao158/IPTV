@@ -108,7 +108,7 @@ def parse_txt(content: str) -> List[Dict]:
     return channels
 
 def deduplicate_channels(channels: List[Dict]) -> List[Dict]:
-    """根据URL去重频道，保留先出现的（私源优先）"""
+    """根据URL去重，保留先出现的（私源优先）"""
     seen_urls = set()
     unique_channels = []
     
@@ -121,7 +121,7 @@ def deduplicate_channels(channels: List[Dict]) -> List[Dict]:
     return unique_channels
 
 def categorize_channels(channels: List[Dict]) -> tuple[List[Dict], List[Dict]]:
-    """分类频道，分离出4K8K频道和普通频道"""
+    """分类：普通频道 / 4K8K专区"""
     normal_channels = []
     _4k8k_channels = []
     
@@ -137,16 +137,14 @@ def categorize_channels(channels: List[Dict]) -> tuple[List[Dict], List[Dict]]:
     return normal_channels, _4k8k_channels
 
 def generate_m3u(normal_channels: List[Dict], _4k8k_channels: List[Dict]) -> str:
-    """生成最终的M3U文件内容"""
+    """生成最终M3U"""
     m3u_content = "#EXTM3U\n\n"
     
-    # 先写普通频道
     if normal_channels:
         m3u_content += "#EXTGRP:普通频道\n"
         for channel in normal_channels:
             m3u_content += f"{channel['extinf']}\n{channel['url']}\n\n"
     
-    # 再写4K8K专区
     if _4k8k_channels:
         m3u_content += "#EXTGRP:4K8K专区\n"
         for channel in _4k8k_channels:
@@ -155,16 +153,14 @@ def generate_m3u(normal_channels: List[Dict], _4k8k_channels: List[Dict]) -> str
     return m3u_content
 
 def generate_txt(normal_channels: List[Dict], _4k8k_channels: List[Dict]) -> str:
-    """生成最终的TXT文件内容"""
+    """生成最终TXT"""
     txt_content = ""
     
-    # 先写普通频道
     if normal_channels:
         txt_content += "# 普通频道\n"
         for channel in normal_channels:
             txt_content += f"{channel['name']},{channel['url']}\n"
     
-    # 再写4K8K专区
     if _4k8k_channels:
         txt_content += "\n# 4K8K专区\n"
         for channel in _4k8k_channels:
@@ -176,7 +172,7 @@ def main():
     print("🚀 开始更新直播源...")
     all_channels = []
     
-    # 1. 加载私源（优先级最高）
+    # 1. 加载私源
     print("\n📥 加载私源...")
     for source in PRIVATE_SOURCES:
         print(f"  处理: {source}")
@@ -187,7 +183,6 @@ def main():
             elif source.endswith('.txt'):
                 channels = parse_txt(content)
             else:
-                # 尝试两种解析方式
                 channels = parse_m3u(content)
                 if not channels:
                     channels = parse_txt(content)
@@ -221,7 +216,20 @@ def main():
     print(f"\n📊 分类结果:")
     print(f"  普通频道: {len(normal_channels)} 个")
     print(f"  4K8K专区: {len(_4k8k_channels)} 个")
-    
+
+    # ==============================================
+    # 整合 咪咕1080P 央卫直播源
+    # ==============================================
+    try:
+        print("\n🔗 正在加载咪咕1080P直播源...")
+        with open("migu.m3u", "r", encoding="utf-8") as f:
+            migu_text = f.read()
+        migu_list = parse_m3u(migu_text)
+        normal_channels.extend(migu_list)
+        print(f"✅ 成功载入咪咕1080P频道：{len(migu_list)} 个")
+    except Exception as e:
+        print(f"⚠️  咪咕1080P源加载失败：{str(e)}")
+
     # 5. 生成输出文件
     m3u_content = generate_m3u(normal_channels, _4k8k_channels)
     txt_content = generate_txt(normal_channels, _4k8k_channels)
