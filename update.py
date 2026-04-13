@@ -10,9 +10,10 @@ PRIVATE_SOURCES = [
     # "https://你的私源地址2.txt",
 ]
 
-# 公共源列表（私源之后加载）
+# 公共源列表（私源之后加载，已自动加入咪咕1080P公开源）
 PUBLIC_SOURCES = [
     "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u",
+    "https://raw.githubusercontent.com/FongMi/TV/main/TV/migu.txt",  # 👈 已自动添加咪咕1080P央卫源
     # 可以添加更多公共源
 ]
 
@@ -189,7 +190,7 @@ def main():
             all_channels.extend(channels)
             print(f"  ✅ 加载了 {len(channels)} 个频道")
     
-    # 2. 加载公共源
+    # 2. 加载公共源（含咪咕1080P源）
     print("\n📥 加载公共源...")
     for source in PUBLIC_SOURCES:
         print(f"  处理: {source}")
@@ -216,19 +217,6 @@ def main():
     print(f"\n📊 分类结果:")
     print(f"  普通频道: {len(normal_channels)} 个")
     print(f"  4K8K专区: {len(_4k8k_channels)} 个")
-
-    # ==============================================
-    # 整合 咪咕1080P 央卫直播源
-    # ==============================================
-    try:
-        print("\n🔗 正在加载咪咕1080P直播源...")
-        with open("migu.m3u", "r", encoding="utf-8") as f:
-            migu_text = f.read()
-        migu_list = parse_m3u(migu_text)
-        normal_channels.extend(migu_list)
-        print(f"✅ 成功载入咪咕1080P频道：{len(migu_list)} 个")
-    except Exception as e:
-        print(f"⚠️  咪咕1080P源加载失败：{str(e)}")
 
     # 5. 生成输出文件
     m3u_content = generate_m3u(normal_channels, _4k8k_channels)
