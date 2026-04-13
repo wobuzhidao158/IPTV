@@ -1,6 +1,38 @@
 #EXTM3U
+#EXTINF:-1 group-title="📺央视频道",CCTV1
+http://223.95.198.3:8000/hls/1/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV2
+http://223.95.198.3:8000/hls/2/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV3
+http://223.95.198.3:8000/hls/3/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV4
+http://223.95.198.3:8000/hls/4/index.m3u8
 #EXTINF:-1 group-title="📺央视频道",CCTV5+
 http://60.10.139.113:8801/hls/15/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV6
+http://223.95.198.3:8000/hls/6/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV7
+http://223.95.198.3:8000/hls/7/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV8
+http://223.95.198.3:8000/hls/8/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV9
+http://223.95.198.3:8000/hls/9/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV10
+http://223.95.198.3:8000/hls/10/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV11
+http://223.95.198.3:8000/hls/11/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV12
+http://223.95.198.3:8000/hls/12/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV13
+http://223.95.198.3:8000/hls/13/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV14
+http://223.95.198.3:8000/hls/14/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV15
+http://223.95.198.3:8000/hls/15/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV16
+http://223.95.198.3:8000/hls/16/index.m3u8
+#EXTINF:-1 group-title="📺央视频道",CCTV17
+http://223.95.198.3:8000/hls/17/index.m3u8
 #EXTINF:-1 group-title="📺央视频道",CCTV
 http://60.10.139.113:8801/hls/98/index.m3u8
 #EXTINF:-1 group-title="📺央视频道",CCTV老故事
@@ -29,10 +61,10 @@ http://60.10.139.113:8801/hls/18/index.m3u8
 http://60.10.139.113:8801/hls/99/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",江西卫视
 http://60.10.139.113:8801/hls/37/index.m3u8
-#EXTINF:-1 group-title="📺卫视频道",山东卫视
-http://60.10.139.113:8801/hls/25/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",山东教育卫视
 http://60.10.139.113:8801/hls/63/index.m3u8
+#EXTINF:-1 group-title="📺卫视频道",山东卫视
+http://60.10.139.113:8801/hls/25/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",河南卫视
 http://1.94.31.214/php/hntv.php?id=hnws
 #EXTINF:-1 group-title="📺卫视频道",湖北卫视
@@ -67,10 +99,10 @@ http://60.10.139.113:8801/hls/57/index.m3u8
 http://h.vanshun.com:8802/udp/239.49.0.178:8000$
 #EXTINF:-1 group-title="📺卫视频道",东方卫视
 http://60.10.139.113:8801/hls/22/index.m3u8
-#EXTINF:-1 group-title="📺卫视频道",东南卫视
-http://60.10.139.113:8801/hls/21/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",深圳卫视
 http://nn.7x9d.cn/深圳最新.php?id=szws4k
+#EXTINF:-1 group-title="📺卫视频道",东南卫视
+http://60.10.139.113:8801/hls/21/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",三沙卫视
 http://h.vanshun.com:8802/udp/239.49.0.167:8000$
 #EXTINF:-1 group-title="📺卫视频道",厦门卫视
@@ -87,56 +119,16 @@ http://38.75.136.137:98/gslb/dsdqpub/chchd.m3u8?auth=testpub
 http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 #EXTINF:-1 group-title="🎬影视频道",淘电影
 http://36.110.54.118:866/hls/21/index.m3u8
+#EXTINF:-1 group-title="🎬影视频道",华语影视
+http://www.goodiptv.club/douyu/3928
+#EXTINF:-1 group-title="🎬影视频道",发条张的电影最TOP
+https://goodiptv.club/douyu/2164691
 #EXTINF:-1 group-title="🎬影视频道",哈尔滨影视
 http://stream.hrbtv.net/yspd/sd/live.m3u8?zheild
+#EXTINF:-1 group-title="🎬影视频道",喜剧电影笑不停
+https://goodiptv.club/douyu/10298856
 #EXTINF:-1 group-title="🎬影视频道",浙江教科影视
 http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
-<<<<<<< Updated upstream
-#EXTINF:-1 group-title="🎬影视频道",美亚电影
-http://iptv.4666888.xyz/iptv2A.php?id=30
-#EXTINF:-1 group-title="👦少儿频道",金鹰卡通
-http://60.10.139.113:8801/hls/62/index.m3u8
-#EXTINF:-1 group-title="👦少儿频道",卡酷少儿
-http://60.10.139.113:8801/hls/61/index.m3u8
-#EXTINF:-1 group-title="👦少儿频道",南京少儿
-http://nklive.nbs.cn/hls/e0981f3f-1a20-4a59-b8d1-17feb83a4610/index.m3u8
-#EXTINF:-1 group-title="👦少儿频道",福州少儿
-http://live.zohi.tv/video/s10001-fztv-4/index.m3u8
-#EXTINF:-1 group-title="👦少儿频道",韩国EBS少儿
-http://ebsonairios.ebs.co.kr/ebsutablet500k/tablet500k/playlist.m3u8
-#EXTINF:-1 group-title="👦少儿频道",黑龙江少儿
-https://ls.qingting.fm/live/4972/64k.m3u8
-#EXTINF:-1 group-title="🇭🇰香港频道",TVB Plus
-https://o11.163189.xyz/stream/tvb/tvbp/
-#EXTINF:-1 group-title="🇭🇰香港频道",TVB翡翠台
-http://cdn6.163189.xyz/163189/fct4k
-#EXTINF:-1 group-title="🇭🇰香港频道",香港面包台
-https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
-#EXTINF:-1 group-title="🇭🇰香港频道",凤凰香港
-http://cdn6.163189.xyz/163189/fhhk
-#EXTINF:-1 group-title="🇭🇰香港频道",TVBS亚洲
-http://38.64.72.148/hls/modn/list/4005/chunklist1.m3u8
-#EXTINF:-1 group-title="🇭🇰香港频道",TVBS亚洲备选
-http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-#EXTINF:-1 group-title="🇲🇴澳门频道",澳视澳门
-https://cdn6.163189.xyz/163189/asam
-#EXTINF:-1 group-title="🇲🇴澳门频道",澳门体育
-http://cdn6.163189.xyz/163189/amty
-#EXTINF:-1 group-title="🇲🇴澳门频道",澳门综艺
-http://cdn6.163189.xyz/163189/amzy
-#EXTINF:-1 group-title="🌍台湾频道",三立台湾
-https://haoyunlai.serv00.net/Smartv-1.php?id=sanlitaiwan
-#EXTINF:-1 group-title="🌍台湾频道",中天新闻
-http://222.128.55.152:9080/live/fc.m3u8
-#EXTINF:-1 group-title="🌍台湾频道",东森新闻
-http://38.64.72.148:80/hls/modn/list/2015/chunklist0.m3u8
-#EXTINF:-1 group-title="🌍台湾频道",东森超视
-http://38.64.72.148:80/hls/modn/list/2013/chunklist1.m3u8
-#EXTINF:-1 group-title="🇸🇬新加坡频道",新加坡
-https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
-#EXTINF:-1 group-title="🇸🇬新加坡频道",新加坡备选
-https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-=======
 #EXTINF:-1 group-title="🎬影视频道",特辑电影院
 https://goodiptv.club/douyu/3637778
 #EXTINF:-1 group-title="🎬影视频道",美亚电影
@@ -163,7 +155,6 @@ https://goodiptv.club/douyu/8475821
 https://goodiptv.club/douyu/9720498
 #EXTINF:-1 group-title="🎬影视频道",洛克电影
 https://goodiptv.club/douyu/9414884
->>>>>>> Stashed changes
 #EXTINF:-1 group-title="其他频道",CGTN
 https://english-livebkali.cgtn.com/live/encgtn_0.m3u8
 #EXTINF:-1 group-title="其他频道",CGTN记录
@@ -184,11 +175,8 @@ http://60.10.139.113:8801/hls/91/index.m3u8
 http://61.221.215.25:8800/hls/41/index.m3u8
 #EXTINF:-1 group-title="其他频道",AiTV
 http://swiftplay.hxkjmedia.com/tv/spbW.m3u8
-<<<<<<< Updated upstream
-=======
 #EXTINF:-1 group-title="其他频道",金鹰卡通
 http://60.10.139.113:8801/hls/62/index.m3u8
->>>>>>> Stashed changes
 #EXTINF:-1 group-title="其他频道",金鹰纪实
 http://60.10.139.113:8801/hls/33/index.m3u8
 #EXTINF:-1 group-title="其他频道",三农
@@ -199,8 +187,6 @@ http://60.10.139.113:8801/hls/61/index.m3u8
 http://60.10.139.113:8801/hls/75/index.m3u8
 #EXTINF:-1 group-title="其他频道",国学频道
 http://60.10.139.113:8801/hls/77/index.m3u8
-<<<<<<< Updated upstream
-=======
 #EXTINF:-1 group-title="其他频道",南京少儿
 http://nklive.nbs.cn/hls/e0981f3f-1a20-4a59-b8d1-17feb83a4610/index.m3u8
 #EXTINF:-1 group-title="其他频道",漫尼动画
@@ -217,7 +203,6 @@ https://ls.qingting.fm/live/4972/64k.m3u8
 https://o11.163189.xyz/stream/tvb/tvbp/
 #EXTINF:-1 group-title="其他频道",TVB翡翠台
 http://cdn6.163189.xyz/163189/fct4k
->>>>>>> Stashed changes
 #EXTINF:-1 group-title="其他频道",Viutv
 https://turkmedya-live.ercdn.net/tv360/tv360.m3u8
 #EXTINF:-1 group-title="其他频道",Viutv备选
@@ -292,33 +277,38 @@ http://tvhope.cdnvideo.ru/tvhope-pull/tvhope_1/playlist.m3u8
 https://zoomoo-samsungau.amagi.tv/playlist1080p.m3u8
 #EXTINF:-1 group-title="其他频道",亚洲新闻
 https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
-<<<<<<< Updated upstream
-=======
 #EXTINF:-1 group-title="其他频道",新加坡
 https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 #EXTINF:-1 group-title="其他频道",新加坡备选
 https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
->>>>>>> Stashed changes
 #EXTINF:-1 group-title="其他频道",ROCK Action
 http://iptv.4666888.xyz/iptv2A.php?id=50
 #EXTINF:-1 group-title="其他频道",娱乐新闻台
 http://iptv.4666888.xyz/iptv2A.php?id=36
-<<<<<<< Updated upstream
-#EXTINF:-1 group-title="其他频道",猫和老鼠
-https://live.metshop.top/huya/11352879
-=======
 #EXTINF:-1 group-title="其他频道",奇光主播q
 https://goodiptv.club/douyu/12560807
+#EXTINF:-1 group-title="其他频道",奇光主播R
+https://goodiptv.club/douyu/12080172
+#EXTINF:-1 group-title="其他频道",龍組队长天昊
+https://goodiptv.club/douyu/1487654
+#EXTINF:-1 group-title="其他频道",刀刀de食堂
+https://goodiptv.club/douyu/6733133
+#EXTINF:-1 group-title="其他频道",周杰伦颜老师
+https://goodiptv.club/douyu/7537296
 #EXTINF:-1 group-title="其他频道",小毅主播R
 https://goodiptv.club/douyu/12805939
 #EXTINF:-1 group-title="其他频道",崔然竣舞台天才
 https://goodiptv.club/douyu/113158
 #EXTINF:-1 group-title="其他频道",我砸晕了牛顿奥
 https://goodiptv.club/douyu/1218414
+#EXTINF:-1 group-title="其他频道",崔杋圭五颜一
+https://goodiptv.club/douyu/8189873
 #EXTINF:-1 group-title="其他频道",兔兔MC维辰软桃团
 https://goodiptv.club/douyu/8266799
 #EXTINF:-1 group-title="其他频道",刘少丶
 https://goodiptv.club/douyu/131977
+#EXTINF:-1 group-title="其他频道",我们可爱的程程
+https://goodiptv.club/douyu/329667
 #EXTINF:-1 group-title="其他频道",萌小鬼
 https://goodiptv.club/douyu/3928
 #EXTINF:-1 group-title="其他频道",刘松毅
@@ -431,6 +421,8 @@ https://goodiptv.club/douyu/8737695
 https://goodiptv.club/douyu/10308234
 #EXTINF:-1 group-title="其他频道",小小甜的骑士
 https://goodiptv.club/douyu/9236042
+#EXTINF:-1 group-title="其他频道",猫和老鼠
+https://live.metshop.top/huya/11352879
 #EXTINF:-1 group-title="其他频道",蕃薯粥粥煮好了
 https://goodiptv.club/douyu/11878141
 #EXTINF:-1 group-title="其他频道",草帽丶海贼团
@@ -453,4 +445,3 @@ https://goodiptv.club/douyu/9412981
 https://goodiptv.club/douyu/9653063
 #EXTINF:-1 group-title="其他频道",南国小豆豆
 https://goodiptv.club/douyu/3310454
->>>>>>> Stashed changes
