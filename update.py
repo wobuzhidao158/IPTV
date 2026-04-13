@@ -1,103 +1,240 @@
 import requests
-import os
+import re
+import time
+from typing import List, Dict
 
-# ===================== 配置 =====================
-LOCAL_FILE = "直播源.txt"
-OUTPUT_FILE = "iptv.m3u"
-NET_URL = "https://raw.githubusercontent.com/wobuzhidao158/IPTV/main/iptv.m3u"
+# ====================== 配置区域（请根据你的需求修改） ======================
+# 私源列表（优先级最高，排在最前面，重复频道保留私源）
+PRIVATE_SOURCES = [
+    # "https://你的私源地址1.m3u",
+    # "https://你的私源地址2.txt",
+]
 
-# 【完全按你要求的分类+顺序】
-CATEGORIES = {
-    "📶央视频道": ["CCTV", "央视", "CGTN"],
-    "📶卫视频道": ["卫视", "北京", "天津", "河北", "山西", "内蒙古",
-                   "辽宁", "吉林", "黑龙江", "上海", "江苏", "浙江",
-                   "安徽", "福建", "江西", "山东", "河南", "湖北",
-                   "湖南", "广东", "广西", "海南", "重庆", "四川",
-                   "贵州", "云南", "西藏", "陕西", "甘肃", "青海",
-                   "宁夏", "新疆", "深圳", "厦门"],
-    "📺4K8K频道": ["4K", "8K", "UHD", "2160p", "超高清"],
-    "🎥影视频道": ["电影", "影院", "影视", "剧场", "纪录", "科教", "财经"],
-    "🧒少儿频道": ["少儿", "儿童", "动画", "卡通"],
-    "🇭🇰香港频道": ["TVB", "翡翠", "明珠", "香港", "凤凰", "ViuTV"],
-    "🇲🇴澳门频道": ["澳门", "澳广视", "TDM", "澳亚"],
-    "🇹🇼台湾频道": ["台视", "中视", "华视", "民视", "公视", "三立", "东森",
-                   "中天", "TVBS", "年代", "纬来", "台湾"],
-    "🇸🇬新加坡频道": ["新传媒", "星和", "新电信", "新加坡", "Mediacorp"],
-    "其他频道": []
-}
+# 公共源列表（私源之后加载）
+PUBLIC_SOURCES = [
+    "https://raw.githubusercontent.com/iptv-org/iptv/master/streams/cn.m3u",
+    # 可以添加更多公共源
+]
 
-# ===================== 核心函数 =====================
-def get_category(name):
-    # 按优先级匹配（先具体后通用）
-    priority = ["🇸🇬新加坡频道", "🇹🇼台湾频道", "🇲🇴澳门频道", "🇭🇰香港频道",
-                "📺4K8K频道", "🧒少儿频道", "🎥影视频道", "📶央视频道", "📶卫视频道"]
-    for cat in priority:
-        for kw in CATEGORIES[cat]:
-            if kw.lower() in name.lower():
-                return cat
-    return "其他频道"
+# 4K8K专区关键词（匹配到任意一个就会归类到4K8K专区）
+_4K8K_KEYWORDS = ["4K", "8K", "超高清", "4K超清", "8K超清", "UHD", "HDR", "杜比视界"]
 
-# ===================== 主逻辑 =====================
-# 1. 读取本地源（优先保留）
-local_channels = []
-if os.path.exists(LOCAL_FILE):
-    with open(LOCAL_FILE, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if "," in line and not line.startswith("#"):
-                name, url = line.split(",", 1)
-                name = name.strip()
-                url = url.strip()
-                if url.startswith("http"):
-                    local_channels.append((name, url))
+# 输出文件名
+OUTPUT_M3U = "live.m3u"
+OUTPUT_TXT = "live.txt"
 
-# 2. 抓取网络源补充
-net_channels = []
-try:
-    resp = requests.get(NET_URL, timeout=10)
-    lines = resp.text.splitlines()
-    i = 0
-    while i < len(lines):
-        l = lines[i].strip()
-        if l.startswith("#EXTINF"):
-            name = l.split(",")[-1].strip()
-            if i + 1 < len(lines):
-                url = lines[i+1].strip()
-                if url.startswith("http"):
-                    net_channels.append((name, url))
-                    i += 2
+# 请求超时时间（秒）
+REQUEST_TIMEOUT = 15
+# ======================================================================
+
+def download_url(url: str) -> str:
+    """下载URL内容，自动处理编码问题"""
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
+        response.raise_for_status()
+        
+        # 自动检测编码
+        if response.encoding.lower() == 'iso-8859-1':
+            for encoding in ['utf-8', 'gbk', 'gb2312', 'utf-16']:
+                try:
+                    return response.content.decode(encoding)
+                except UnicodeDecodeError:
                     continue
-        i += 1
-except:
-    pass
+        return response.text
+    except Exception as e:
+        print(f"❌ 下载失败 {url}: {str(e)}")
+        return ""
 
-# 3. 合并去重（本地优先）
-all_channels = []
-exist_names = set()
-for name, url in local_channels + net_channels:
-    if name not in exist_names:
-        all_channels.append((name, url))
-        exist_names.add(name)
+def parse_m3u(content: str) -> List[Dict]:
+    """解析M3U格式内容，返回频道列表"""
+    channels = []
+    lines = content.splitlines()
+    i = 0
+    current_extinf = ""
+    
+    while i < len(lines):
+        line = lines[i].strip()
+        if not line:
+            i += 1
+            continue
+            
+        if line.startswith('#EXTINF:'):
+            current_extinf = line
+            # 提取频道名称
+            name_match = re.search(r',\s*(.*)$', line)
+            name = name_match.group(1).strip() if name_match else "未知频道"
+            i += 1
+            
+            # 找到下一个非空行作为URL
+            while i < len(lines):
+                url_line = lines[i].strip()
+                if url_line and not url_line.startswith('#'):
+                    channels.append({
+                        "name": name,
+                        "url": url_line,
+                        "extinf": current_extinf
+                    })
+                    break
+                i += 1
+        else:
+            i += 1
+            
+    return channels
 
-# 4. 按分类分组
-groups = {cat: [] for cat in CATEGORIES.keys()}
-for name, url in all_channels:
-    cat = get_category(name)
-    groups[cat].append((name, url))
+def parse_txt(content: str) -> List[Dict]:
+    """解析TXT格式内容（频道名,URL），返回频道列表"""
+    channels = []
+    lines = content.splitlines()
+    
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+            
+        parts = line.split(',', 1)
+        if len(parts) == 2:
+            name = parts[0].strip()
+            url = parts[1].strip()
+            if url.startswith(('http://', 'https://', 'rtsp://')):
+                channels.append({
+                    "name": name,
+                    "url": url,
+                    "extinf": f"#EXTINF:-1,{name}"
+                })
+                
+    return channels
 
-# 5. 输出带分类的标准M3U
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    f.write('#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"\n')
-    # 严格按你指定的顺序输出分类
-    for cat in CATEGORIES.keys():
-        for name, url in groups[cat]:
-            f.write(f'#EXTINF:-1 group-title="{cat}",{name}\n{url}\n')
+def deduplicate_channels(channels: List[Dict]) -> List[Dict]:
+    """根据URL去重频道，保留先出现的（私源优先）"""
+    seen_urls = set()
+    unique_channels = []
+    
+    for channel in channels:
+        url = channel["url"].strip()
+        if url not in seen_urls:
+            seen_urls.add(url)
+            unique_channels.append(channel)
+            
+    return unique_channels
 
-# 控制台输出统计
-print(f"✅ 本地源：{len(local_channels)} 个")
-print(f"✅ 网络源：{len(net_channels)} 个")
-print(f"✅ 总频道：{len(all_channels)} 个")
-print("\n📊 分类统计：")
-for cat in CATEGORIES.keys():
-    if groups[cat]:
-        print(f"  {cat}: {len(groups[cat])} 个")
+def categorize_channels(channels: List[Dict]) -> tuple[List[Dict], List[Dict]]:
+    """分类频道，分离出4K8K频道和普通频道"""
+    normal_channels = []
+    _4k8k_channels = []
+    
+    for channel in channels:
+        name = channel["name"].upper()
+        is_4k8k = any(keyword.upper() in name for keyword in _4K8K_KEYWORDS)
+        
+        if is_4k8k:
+            _4k8k_channels.append(channel)
+        else:
+            normal_channels.append(channel)
+            
+    return normal_channels, _4k8k_channels
+
+def generate_m3u(normal_channels: List[Dict], _4k8k_channels: List[Dict]) -> str:
+    """生成最终的M3U文件内容"""
+    m3u_content = "#EXTM3U\n\n"
+    
+    # 先写普通频道
+    if normal_channels:
+        m3u_content += "#EXTGRP:普通频道\n"
+        for channel in normal_channels:
+            m3u_content += f"{channel['extinf']}\n{channel['url']}\n\n"
+    
+    # 再写4K8K专区
+    if _4k8k_channels:
+        m3u_content += "#EXTGRP:4K8K专区\n"
+        for channel in _4k8k_channels:
+            m3u_content += f"{channel['extinf']}\n{channel['url']}\n\n"
+            
+    return m3u_content
+
+def generate_txt(normal_channels: List[Dict], _4k8k_channels: List[Dict]) -> str:
+    """生成最终的TXT文件内容"""
+    txt_content = ""
+    
+    # 先写普通频道
+    if normal_channels:
+        txt_content += "# 普通频道\n"
+        for channel in normal_channels:
+            txt_content += f"{channel['name']},{channel['url']}\n"
+    
+    # 再写4K8K专区
+    if _4k8k_channels:
+        txt_content += "\n# 4K8K专区\n"
+        for channel in _4k8k_channels:
+            txt_content += f"{channel['name']},{channel['url']}\n"
+            
+    return txt_content
+
+def main():
+    print("🚀 开始更新直播源...")
+    all_channels = []
+    
+    # 1. 加载私源（优先级最高）
+    print("\n📥 加载私源...")
+    for source in PRIVATE_SOURCES:
+        print(f"  处理: {source}")
+        content = download_url(source)
+        if content:
+            if source.endswith('.m3u'):
+                channels = parse_m3u(content)
+            elif source.endswith('.txt'):
+                channels = parse_txt(content)
+            else:
+                # 尝试两种解析方式
+                channels = parse_m3u(content)
+                if not channels:
+                    channels = parse_txt(content)
+            all_channels.extend(channels)
+            print(f"  ✅ 加载了 {len(channels)} 个频道")
+    
+    # 2. 加载公共源
+    print("\n📥 加载公共源...")
+    for source in PUBLIC_SOURCES:
+        print(f"  处理: {source}")
+        content = download_url(source)
+        if content:
+            if source.endswith('.m3u'):
+                channels = parse_m3u(content)
+            elif source.endswith('.txt'):
+                channels = parse_txt(content)
+            else:
+                channels = parse_m3u(content)
+                if not channels:
+                    channels = parse_txt(content)
+            all_channels.extend(channels)
+            print(f"  ✅ 加载了 {len(channels)} 个频道")
+    
+    # 3. 去重
+    print(f"\n🧹 去重前总频道数: {len(all_channels)}")
+    unique_channels = deduplicate_channels(all_channels)
+    print(f"✅ 去重后总频道数: {len(unique_channels)}")
+    
+    # 4. 分类
+    normal_channels, _4k8k_channels = categorize_channels(unique_channels)
+    print(f"\n📊 分类结果:")
+    print(f"  普通频道: {len(normal_channels)} 个")
+    print(f"  4K8K专区: {len(_4k8k_channels)} 个")
+    
+    # 5. 生成输出文件
+    m3u_content = generate_m3u(normal_channels, _4k8k_channels)
+    txt_content = generate_txt(normal_channels, _4k8k_channels)
+    
+    with open(OUTPUT_M3U, 'w', encoding='utf-8') as f:
+        f.write(m3u_content)
+    print(f"\n💾 已生成 {OUTPUT_M3U}")
+    
+    with open(OUTPUT_TXT, 'w', encoding='utf-8') as f:
+        f.write(txt_content)
+    print(f"💾 已生成 {OUTPUT_TXT}")
+    
+    print("\n🎉 直播源更新完成！")
+
+if __name__ == "__main__":
+    main()
