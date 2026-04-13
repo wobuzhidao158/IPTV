@@ -1609,69 +1609,6 @@ http://118.81.195.79:9003/hls/31/index.m3u8
 #EXTINF:-1 tvg-id="CCTV16.cn@SD",CCTV-16
 http://74.91.26.218:82/live/cctv16hd.m3u8
 
-#EXTINF:-1 group-title="咪咕1080P",【咪咕1080P】央卫总控
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV2财经【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV3综艺【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV4中文国际【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV5体育【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV6电影【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV7军事农业【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV8电视剧【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV9纪录【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV10科教【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV11戏曲【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV12社会与法【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV13新闻【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV15音乐【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",东方卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",浙江卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",湖南卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",江苏卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",北京卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",广东卫视【源失效】
-https://example.com/invalid
-
-#EXTINF:-1 group-title="咪咕1080P失效",深圳卫视【源失效】
-https://example.com/invalid
-
 #EXTGRP:4K8K专区
 #EXTINF:-1 tvg-id="",纯享4K (2160p)
 http://39.134.115.163:8080/PLTV/88888910/224/3221225786/index.m3u8
