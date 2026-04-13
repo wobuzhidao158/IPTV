@@ -1,23 +1,23 @@
-name: 私源优先直播源自动更新（不分地区终版）
-
-permissions:
-  contents: write
+name: 私源优先直播源自动更新
 
 on:
-  push:
-    branches: [ main ]
   schedule:
-    - cron: '0 16 * * *'  # 北京时间 00:00
-  workflow_dispatch:
+    - cron: '0 */6 * * *'      # 每6小时运行一次
+  workflow_dispatch:            # 允许手动触发
+  push:
+    branches: [ main ]          # 推送代码时触发
+
+permissions:
+  contents: write               # 授予写入权限
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false   # 不自动取消
+  cancel-in-progress: false     # 不自动取消正在运行的任务
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30       # 总超时 30 分钟
+    timeout-minutes: 30         # 总超时30分钟
 
     steps:
       - name: 拉取代码
@@ -33,13 +33,13 @@ jobs:
 
       - name: 运行私源优先脚本
         run: python update.py
-        timeout-minutes: 25   # 步骤超时 25 分钟
+        timeout-minutes: 25     # 脚本运行超时25分钟
 
-      - name: 强制提交覆盖远程
+      - name: 提交更新
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "bot@example.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin main --rebase --autostash
           git add *.m3u *.txt
-          git commit -m "auto update [私源优先] [skip ci]" || echo "无变更跳过提交"
+          git commit -m "🔄 自动更新直播源 [skip ci]" || echo "无变更跳过提交"
           git push --force origin HEAD
