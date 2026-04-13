@@ -5,25 +5,30 @@ import requests
 from datetime import datetime
 
 # ===================== 配置区 =====================
-CHECK_TIMEOUT = 10
+CHECK_TIMEOUT = 8
 LOCAL_TXT = "直播源.txt"
 OUT_M3U = "直播汇总.m3u"
 LOG_TXT = "更新日志.txt"
 
+# 可用的网络源（你可以自己加）
 NETWORK_SOURCES = [
-    "https://your-api-1.com/iptv.txt",
-    "https://your-api-2.com/iptv.txt",
-    "https://your-api-3.com/iptv.m3u",
+    "https://raw.githubusercontent.com/longtian1024/iptv/main/tv.txt",
+    "https://raw.githubusercontent.com/ssjunjie1/IPTV/main/IPTV.txt",
+    "https://raw.githubusercontent.com/longg0201/iptv/main/tv.txt",
 ]
 
+# 频道分类
 CATEGORIES = {
     "📺央视频道": ["CCTV", "央视"],
     "📺卫视频道": ["卫视"],
-    "🎥4K频道": ["4K", "4k", "8K", "8k", "UHD"],
+    "🎥4K频道": ["4K", "4k", "8K", "8k", "UHD", "2160p"],
     "🎬影视频道": ["电影", "影院", "影视"],
+    "🧒少儿频道": ["少儿", "动画", "儿童"],
+    "🇭🇰香港频道": ["TVB", "翡翠", "香港"],
     "其他频道": []
 }
 
+# 卫视排序
 PROVINCE_ORDER = [
     "北京", "天津", "河北", "山西", "内蒙古",
     "辽宁", "吉林", "黑龙江", "上海", "江苏",
@@ -33,133 +38,171 @@ PROVINCE_ORDER = [
     "陕西", "甘肃", "青海", "宁夏", "新疆"
 ]
 
-# ===================== 核心函数 =====================
+# ===================== 工具函数 =====================
 
 def clean_name(name):
     name = re.sub(r'[\[\(（【].*?[\]\)）】]', '', name)
     name = re.sub(r'\b\d+[Pp]\b', '', name)
-    name = re.sub(r'\b(4K|8K|HD|FHD|UHD|SD|高清|超清|标清)\b', '', name, flags=re.IGNORECASE)
-    name = re.sub(r'\b(IPV4|IPV6|Not24/7|24/7)\b', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'\b(4K|8K|HD|高清|超清|标清)\b', '', name, flags=re.IGNORECASE)
     name = re.sub(r'\s+', ' ', name).strip()
     return name
 
 def get_key(name):
-    name = clean_name(name)
-    return re.sub(r'[^\w\u4e00-\u9fff]', '', name).lower()
+    cn = clean_name(name)
+    return re.sub(r'[^\w\u4e00-\u9fff]', '', cn).lower()
 
 def check_alive(url):
-    return True  # 永远返回有效，不检测
-
-def fetch_sources(url):
-    sources = []
     try:
-        r = requests.get(url, timeout=8)
-        lines = r.text.splitlines()
-        i = 0
-        while i < len(lines):
-            line = lines[i].strip()
-            if not line or line.startswith('#'):
-                i += 1
-                continue
-            if ',' in line:
-                parts = line.split(',', 1)
-                if len(parts) == 2:
-                    name, url = parts[0].strip(), parts[1].strip()
-                    sources.append((name, url))
-                i += 1
-            elif line.startswith('#EXTINF'):
-                name = line.split(',')[-1].strip()
-                if i + 1 < len(lines):
-                    url = lines[i+1].strip()
-                    sources.append((name, url))
-                    i += 2
+        r = requests.head(url, timeout=CHECK_TIMEOUT)
+        return r.status_code in (200, 302)
+    except:
+        try:
+            r = requests.get(url, timeout=CHECK_TIMEOUT, stream=True)
+            return r.status_code in (200, 302)
+        except:
+            return False
+
+def fetch_network_sources():
+    channels = {}
+    for url in NETWORK_SOURCES:
+        try:
+            r = requests.get(url, timeout=10)
+            lines = r.text.splitlines()
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                if not line:
+                    i += 1
+                    continue
+                if "," in line:
+                    parts = line.split(",", 1)
+                    if len(parts) == 2:
+                        name, u = parts[0].strip(), parts[1].strip()
+                        if u.startswith("http"):
+                            key = get_key(name)
+                            if key not in channels:
+                                channels[key] = (name, u)
+                    i += 1
+                elif line.startswith("#EXTINF"):
+                    name = line.split(",")[-1].strip()
+                    if i + 1 < len(lines):
+                        u = lines[i + 1].strip()
+                        if u.startswith("http"):
+                            key = get_key(name)
+                            if key not in channels:
+                                channels[key] = (name, u)
+                        i += 2
+                    else:
+                        i += 1
                 else:
                     i += 1
-            else:
-                i += 1
-    except:
-        pass
-    return sources
+        except Exception as e:
+            continue
+    return channels
 
 def get_category(name):
-    for cat, keywords in CATEGORIES.items():
-        if cat == "其他频道":
-            continue
-        for kw in keywords:
-            if kw.lower() in name.lower():
+    for cat, kw in CATEGORIES.items():
+        if cat == "其他频道": continue
+        for k in kw:
+            if k.lower() in name.lower():
                 return cat
     return "其他频道"
 
 def sort_key(name, cat):
     if cat == "📺央视频道":
         m = re.search(r'CCTV[-]?(\d+)', name)
-        return m and int(m.group(1)) or 99
+        return int(m.group(1)) if m else 99
     elif cat == "📺卫视频道":
-        for i, p in enumerate(PROVINCE_ORDER):
+        for idx, p in enumerate(PROVINCE_ORDER):
             if p in name:
-                return i
+                return idx
     return 999
 
-# ===================== 主程序 =====================
+# ===================== 主逻辑 =====================
 
 def main():
     start = time.time()
-    print("🚀 开始更新...")
+    print("🚀 开始更新直播源")
 
-    # 1. 读取本地源（兼容所有格式，不去重）
-    valid = []
+    # 1. 读取本地
+    local = {}
     if os.path.exists(LOCAL_TXT):
         try:
-            with open(LOCAL_TXT, 'r', encoding='utf-8') as f:
+            with open(LOCAL_TXT, "r", encoding="utf-8") as f:
                 lines = f.readlines()
         except:
-            with open(LOCAL_TXT, 'r', encoding='gbk') as f:
+            with open(LOCAL_TXT, "r", encoding="gbk") as f:
                 lines = f.readlines()
 
         for line in lines:
             line = line.strip()
-            if not line or line.startswith('#'):
+            if not line or line.startswith("#"):
                 continue
-            if ',' in line:
-                parts = line.split(',', 1)
+            if "," in line:
+                parts = line.split(",", 1)
                 if len(parts) == 2:
-                    name = parts[0].strip()
-                    url = parts[1].strip()
-                    valid.append((clean_name(name), url))
+                    name, url = parts[0].strip(), parts[1].strip()
+                    if url.startswith("http"):
+                        key = get_key(name)
+                        local[key] = (name, url)
 
-    print(f"📂 本地源读取: {len(valid)} 个")
+    print(f"📂 本地频道总数：{len(local)}")
 
-    # 2. 保存回本地（保留所有）
-    with open(LOCAL_TXT, 'w', encoding='utf-8') as f:
-        for name, url in valid:
+    # 2. 检测本地可用/不可用
+    valid = {}
+    invalid_keys = []
+    for key, (name, url) in local.items():
+        if check_alive(url):
+            valid[key] = (name, url)
+        else:
+            invalid_keys.append(key)
+
+    print(f"✅ 本地可用：{len(valid)} 个")
+    print(f"❌ 本地失效：{len(invalid_keys)} 个")
+
+    # 3. 失效的从网络补充
+    replaced = 0
+    if invalid_keys:
+        print("🌐 正在从网络抓取补充源...")
+        net_channels = fetch_network_sources()
+        for key in invalid_keys:
+            if key in net_channels:
+                n_name, n_url = net_channels[key]
+                if check_alive(n_url):
+                    valid[key] = (n_name, n_url)
+                    replaced += 1
+
+    print(f"🔄 已补充失效频道：{replaced} 个")
+
+    # 4. 保存回本地
+    with open(LOCAL_TXT, "w", encoding="utf-8") as f:
+        for name, url in valid.values():
             f.write(f"{name},{url}\n")
 
-    # 3. 分类
-    categories = {cat: [] for cat in CATEGORIES.keys()}
-    for name, url in valid:
+    # 5. 分类排序
+    groups = {c: [] for c in CATEGORIES}
+    for name, url in valid.values():
         cat = get_category(name)
-        categories[cat].append((name, url))
+        groups[cat].append((name, url))
 
-    # 4. 排序
-    for cat in categories:
-        categories[cat].sort(key=lambda x: sort_key(x[0], cat))
+    for cat in groups:
+        groups[cat].sort(key=lambda x: sort_key(x[0], cat))
 
-    # 5. 输出M3U
-    with open(OUT_M3U, 'w', encoding='utf-8') as f:
-        f.write('#EXTM3U\n')
-        for cat in CATEGORIES.keys():
-            if categories[cat]:
-                for name, url in categories[cat]:
-                    f.write(f'#EXTINF:-1 group-title="{cat}",{name}\n{url}\n')
+    # 6. 输出M3U
+    with open(OUT_M3U, "w", encoding="utf-8") as f:
+        f.write('#EXTM3U x-tvg-url="https://epg.112114.xyz/epg.xml.gz"\n')
+        for cat in CATEGORIES:
+            for name, url in groups[cat]:
+                f.write(f'#EXTINF:-1 group-title="{cat}",{name}\n{url}\n')
 
-    # 6. 日志
-    elapsed = time.time() - start
-    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 频道总数: {len(valid)} | 耗时: {elapsed:.1f}s\n"
-    with open(LOG_TXT, 'a', encoding='utf-8') as f:
+    # 日志
+    cost = time.time() - start
+    log = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 总频道:{len(valid)} 可用:{len(valid)-replaced} 补充:{replaced} 耗时:{cost:.1f}s\n"
+    with open(LOG_TXT, "a", encoding="utf-8") as f:
         f.write(log)
 
-    print(f"\n🎉 {log.strip()}")
-    print(f"✅ 已生成: {OUT_M3U}")
+    print("\n🎉 完成！")
+    print(log.strip())
 
 if __name__ == "__main__":
     import warnings
