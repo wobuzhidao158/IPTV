@@ -31,6 +31,13 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
+      - name: 生成咪咕1080P源（含失效重试）
+        env:
+          MIGU_UID: ${{ secrets.MIGU_UID }}
+          MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
+        run: python migu.py
+        timeout-minutes: 10
+
       - name: 运行私源优先+4K8K分类脚本
         run: python update.py
         timeout-minutes: 25     # 脚本运行超时25分钟
