@@ -41,6 +41,8 @@ CGTN财经,https://amg01314-amg01314c6-distrotv-us-10220.playouts.now.amagi.tv/i
 新疆卫视,http://h.vanshun.com:8802/udp/239.49.0.178:8000$
 甘肃卫视,http://h.vanshun.com:8802/udp/239.49.0.250:8000$
 厦门卫视,http://www.lizhinas.top:10086/rtp/239.252.219.75:5140
+CETV,http://60.10.139.113:8801/hls/91/index.m3u8
+山东教育卫视,http://60.10.139.113:8801/hls/63/index.m3u8
 CHC动作电影,http://38.75.136.137:98/gslb/dsdqpub/chcdz.m3u8?auth=testpub
 CHC影迷电影,http://38.75.136.137:98/gslb/dsdqpub/chchd.m3u8?auth=testpub
 CHC家庭影院,http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
@@ -53,12 +55,10 @@ CHC家庭影院,http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 浙江教科影视,http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
 特辑电影院,https://goodiptv.club/douyu/3637778
 AiTV,http://swiftplay.hxkjmedia.com/tv/spbW.m3u8
-CETV,http://60.10.139.113:8801/hls/91/index.m3u8
 金鹰卡通,http://60.10.139.113:8801/hls/62/index.m3u8
 金鹰纪实,http://60.10.139.113:8801/hls/33/index.m3u8
 三农,http://60.10.139.113:8801/hls/45/index.m3u8
 卡酷少儿,http://60.10.139.113:8801/hls/61/index.m3u8
-山东教育卫视,http://60.10.139.113:8801/hls/63/index.m3u8
 CCTV老故事,http://60.10.139.113:8801/hls/74/index.m3u8
 环球奇观,http://60.10.139.113:8801/hls/75/index.m3u8
 国学频道,http://60.10.139.113:8801/hls/77/index.m3u8
@@ -112,6 +112,9 @@ ZOO MOO,https://zoomoo-samsungau.amagi.tv/playlist1080p.m3u8
 亚洲新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
 新加坡,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 新加坡备选,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+美亚电影,http://iptv.4666888.xyz/iptv2A.php?id=30
+ROCK Action,http://iptv.4666888.xyz/iptv2A.php?id=50
+娱乐新闻台,http://iptv.4666888.xyz/iptv2A.php?id=36
 奇光主播q,https://goodiptv.club/douyu/12560807
 奇光主播R,https://goodiptv.club/douyu/12080172
 龍組队长天昊,https://goodiptv.club/douyu/1487654
@@ -188,13 +191,10 @@ OneGuy丶,https://goodiptv.club/douyu/9734098
 睡丝虫,https://goodiptv.club/douyu/10308234
 影视笑工场,https://goodiptv.club/douyu/10298846
 小小甜的骑士,https://goodiptv.club/douyu/9236042
-美亚电影,http://iptv.4666888.xyz/iptv2A.php?id=30
 哈利影视,https://goodiptv.club/douyu/8475821
 无际电影,https://goodiptv.club/douyu/9720498
 洛克电影,https://goodiptv.club/douyu/9414884
 猫和老鼠,https://live.metshop.top/huya/11352879
-ROCK Action,http://iptv.4666888.xyz/iptv2A.php?id=50
-娱乐新闻台,http://iptv.4666888.xyz/iptv2A.php?id=36
 蕃薯粥粥煮好了,https://goodiptv.club/douyu/11878141
 草帽丶海贼团,https://goodiptv.club/douyu/997925
 科幻Fans布玛,https://goodiptv.club/douyu/3508304
