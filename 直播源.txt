@@ -50,8 +50,11 @@ CHC家庭影院,http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 淘电影,http://36.110.54.118:866/hls/21/index.m3u8
 三立戏剧,http://61.221.215.25:8800/hls/41/index.m3u8
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 刘哔电影,https://goodiptv.club/douyu/2632223
 前任电影,https://goodiptv.club/douyu/9329242
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 华语影视,http://www.goodiptv.club/douyu/3928
@@ -60,21 +63,17 @@ CHC家庭影院,http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 哈尔滨影视,http://stream.hrbtv.net/yspd/sd/live.m3u8?zheild
 喜剧电影笑不停,https://goodiptv.club/douyu/10298856
 四叶草影视,https://goodiptv.club/douyu/9446117
+<<<<<<< Updated upstream
 大米饭影视,https://goodiptv.club/douyu/9824094
 <<<<<<< Updated upstream
 大荒电影,https://goodiptv.club/douyu/3508538
+=======
+墨逗电影,https://goodiptv.club/douyu/9614847
+>>>>>>> Stashed changes
 天堂电影,https://goodiptv.club/douyu/9573592
-奇怪电影,https://goodiptv.club/douyu/9440966
-无际电影,https://goodiptv.club/douyu/9720498
-有部电影儿,https://goodiptv.club/douyu/9736479
-林九影视,https://goodiptv.club/douyu/7212528
-每日好电影V,https://goodiptv.club/douyu/9533302
-洛克电影,https://goodiptv.club/douyu/9414884
 浙江教科影视,http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
-涛浪浪电影,https://goodiptv.club/douyu/5424258
-熊猫电影,https://goodiptv.club/douyu/3506483
-爱星影视,https://goodiptv.club/douyu/9476806
 特辑电影院,https://goodiptv.club/douyu/3637778
+<<<<<<< Updated upstream
 狗毛电影,https://goodiptv.club/douyu/9356637
 独立鱼电影,https://goodiptv.club/douyu/2413555
 猫眼电影,https://goodiptv.club/douyu/8726221
@@ -84,6 +83,8 @@ CHC家庭影院,http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 每日好电影V,https://goodiptv.club/douyu/9533302
 浙江教科影视,http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
 特辑电影院,https://goodiptv.club/douyu/3637778
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 AiTV,http://swiftplay.hxkjmedia.com/tv/spbW.m3u8
 CETV,http://60.10.139.113:8801/hls/91/index.m3u8
@@ -97,10 +98,13 @@ CCTV老故事,http://60.10.139.113:8801/hls/74/index.m3u8
 国学频道,http://60.10.139.113:8801/hls/77/index.m3u8
 <<<<<<< Updated upstream
 动画大师姐,https://goodiptv.club/douyu/9742136
+<<<<<<< Updated upstream
 动画魂,https://goodiptv.club/douyu/9393242
 =======
 七龙珠,https://live.metshop.top/huya/11601966
 中华小当家,https://live.metshop.top/huya/11342413
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 南京少儿,http://nklive.nbs.cn/hls/e0981f3f-1a20-4a59-b8d1-17feb83a4610/index.m3u8
 漫尼动画,https://goodiptv.club/douyu/10364790
@@ -115,7 +119,6 @@ Viutv备选,https://live.hkdvb.com/hls/live/99.m3u8?token=631170156112507&edge=l
 HOY,https://cdn6.163189.xyz/live/hoy/stream.m3u8
 J,http://r.jdshipin.com/Nr5jq
 Love Nature,https://bamus-lovenature-lg.amagi.tv/720p-cc/index.m3u8
-ROCK Action,http://iptv.4666888.xyz/iptv2A.php?id=50
 tvN,https://d2zyqoz1zsj2mq.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-i9yul1lyegl6e-ssai-prd/6d07fe2a_003a_4879_acfc_44e3c3c10f03/hls/playlist.m3u8
 娱乐新闻台,http://iptv.4666888.xyz/iptv2A.php?id=36
 有线新闻,http://61.10.2.141:80/live_freedirect/freehd209_h.live/chunklist.m3u8
@@ -157,19 +160,21 @@ ZOO MOO,https://zoomoo-samsungau.amagi.tv/playlist1080p.m3u8
 新加坡备选,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 奇光主播q,https://goodiptv.club/douyu/12560807
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 奇光主播R,https://goodiptv.club/douyu/12080172
 小毅主播A,https://goodiptv.club/douyu/12780285
+=======
+>>>>>>> Stashed changes
 龍組队长天昊,https://goodiptv.club/douyu/1487654
 刀刀de食堂,https://goodiptv.club/douyu/6733133
 周杰伦颜老师,https://goodiptv.club/douyu/7537296
-奇光主播,https://goodiptv.club/douyu/8009547
-蕃薯粥粥煮好了,https://goodiptv.club/douyu/11878141
 十七岁的道姑,https://goodiptv.club/douyu/3186217
 小毅主播R,https://goodiptv.club/douyu/12805939
 崔然竣舞台天才,https://goodiptv.club/douyu/113158
 奇兮兮悄陌,https://goodiptv.club/douyu/953193
 我砸晕了牛顿奥,https://goodiptv.club/douyu/1218414
 崔杋圭五颜一,https://goodiptv.club/douyu/8189873
+<<<<<<< Updated upstream
 兔兔MC维辰软桃团,https://goodiptv.club/douyu/8266799
 =======
 刀刀de食堂,https://goodiptv.club/douyu/6733133
@@ -177,24 +182,28 @@ ZOO MOO,https://zoomoo-samsungau.amagi.tv/playlist1080p.m3u8
 小毅主播R,https://goodiptv.club/douyu/12805939
 我砸晕了牛顿奥,https://goodiptv.club/douyu/1218414
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 刘少丶,https://goodiptv.club/douyu/131977
 我们可爱的程程,https://goodiptv.club/douyu/329667
 萌小鬼,https://goodiptv.club/douyu/3928
 Only丶邵氏,https://goodiptv.club/douyu/4246519
 刘松毅,https://goodiptv.club/douyu/12128227
 牛奶味的梦猪猪,https://goodiptv.club/douyu/5261342
-狄胖胖与李乖乖,https://goodiptv.club/douyu/12183882
 女团社颜老师,https://goodiptv.club/douyu/11327316
 JhZj丶天明,https://goodiptv.club/douyu/1006179
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 小毅主播e,https://goodiptv.club/douyu/11851549
 网神影厅,https://goodiptv.club/douyu/508118
 7师傅,https://goodiptv.club/douyu/17732
 成龙历险纪,https://goodiptv.club/douyu/2287949
+=======
+>>>>>>> Stashed changes
 三国颜老师,https://goodiptv.club/douyu/12253936
 苹果Zei甜,https://goodiptv.club/douyu/1174353
-铁甲影院,https://goodiptv.club/douyu/1274132
 LR,https://goodiptv.club/douyu/12534632
+<<<<<<< Updated upstream
 是你的迷弟吖,https://goodiptv.club/douyu/7039598
 =======
 米尼影院,https://goodiptv.club/douyu/7642724
@@ -206,18 +215,24 @@ LR,https://goodiptv.club/douyu/12534632
 LR,https://goodiptv.club/douyu/12534632
 >>>>>>> Stashed changes
 彼岸心属MADEIN伊藤美优,https://goodiptv.club/douyu/40471
+=======
+>>>>>>> Stashed changes
 傲娇的超级赛亚人,https://goodiptv.club/douyu/4373285
-猫记丶,https://goodiptv.club/douyu/9242659
 一把钢刀镇斗虞,https://goodiptv.club/douyu/7356023
 小姐姐不记得,https://goodiptv.club/douyu/3700024
 用户,https://goodiptv.club/douyu/9273031
 小约翰可汗,https://goodiptv.club/douyu/9738854
+<<<<<<< Updated upstream
 Hi欣欣,https://goodiptv.club/douyu/11996166
 <<<<<<< Updated upstream
 武侠剧场,https://goodiptv.club/douyu/9285904
 牛叔说电影二台,https://goodiptv.club/douyu/10010651
 万合出品,https://goodiptv.club/douyu/9220456
 =======
+牛叔说电影二台,https://goodiptv.club/douyu/10010651
+>>>>>>> Stashed changes
+=======
+武侠剧场,https://goodiptv.club/douyu/9285904
 牛叔说电影二台,https://goodiptv.club/douyu/10010651
 >>>>>>> Stashed changes
 开心锤锤动漫,https://goodiptv.club/douyu/9018297
@@ -229,21 +244,39 @@ e尒袏,https://goodiptv.club/douyu/12015111
 菠萝屋SpongeBob,https://goodiptv.club/douyu/12400977
 魔术师丶西索,https://goodiptv.club/douyu/6610883
 楚汉炒果条丶,https://goodiptv.club/douyu/6785471
+<<<<<<< Updated upstream
 开心麻花经典小品,https://goodiptv.club/douyu/10153463
+=======
+OneGuy丶,https://goodiptv.club/douyu/9734098
+开心麻花经典小品,https://goodiptv.club/douyu/10153463
+都市夜魔人老王,https://goodiptv.club/douyu/610972
+刘老师说电影,https://goodiptv.club/douyu/8317926
+>>>>>>> Stashed changes
 虫哥说电影,https://goodiptv.club/douyu/8915074
 游钓中国李大毛,https://goodiptv.club/douyu/791411
 史君说剧,https://goodiptv.club/douyu/9419771
 篮球人物,https://goodiptv.club/douyu/8434598
+<<<<<<< Updated upstream
 星君说电影,https://goodiptv.club/douyu/8014467
+=======
+>>>>>>> Stashed changes
 sweet夏有甜,https://goodiptv.club/douyu/4808115
 大黄喵吖,https://goodiptv.club/douyu/12392971
 赵本删不删,https://goodiptv.club/douyu/9837104
 咚得勒咚咚,https://goodiptv.club/douyu/9163452
 宋小宝小品,https://goodiptv.club/douyu/9817729
+<<<<<<< Updated upstream
 车模颜值大赏,https://goodiptv.club/douyu/10118209
 卿离倾心,https://goodiptv.club/douyu/7286439
 吸奇侠,https://goodiptv.club/douyu/8986636
 贾玲经典小品,https://goodiptv.club/douyu/10419541
+=======
+胆子不小的郑吉祥,https://goodiptv.club/douyu/9171887
+卿离倾心,https://goodiptv.club/douyu/7286439
+吸奇侠,https://goodiptv.club/douyu/8986636
+贾玲经典小品,https://goodiptv.club/douyu/10419541
+3说电影,https://goodiptv.club/douyu/9643264
+>>>>>>> Stashed changes
 怪兽马提尼电影,https://goodiptv.club/douyu/9075333
 大漠叔叔Dm,https://goodiptv.club/douyu/1109218
 堇姑娘,https://goodiptv.club/douyu/297689
@@ -252,13 +285,21 @@ sweet夏有甜,https://goodiptv.club/douyu/4808115
 渔戈兄弟赶海,https://goodiptv.club/douyu/9091847
 小小天才搞笑视频,https://goodiptv.club/douyu/9419678
 巫妖王丶怀旧电视游戏,https://goodiptv.club/douyu/1023277
+<<<<<<< Updated upstream
 培根悖论唠唠嗑,https://goodiptv.club/douyu/5354713
 宇宙探索飞船,https://goodiptv.club/douyu/9456028
 1900影剧室,https://goodiptv.club/douyu/7796193
 热影连连看,https://goodiptv.club/douyu/9388931
+=======
+许君聪经典小品,https://goodiptv.club/douyu/10419558
+宇宙探索飞船,https://goodiptv.club/douyu/9456028
+百晓生说剧,https://goodiptv.club/douyu/9649681
+1900影剧室,https://goodiptv.club/douyu/7796193
+>>>>>>> Stashed changes
 少打白骨精,https://goodiptv.club/douyu/11531165
 顾止最爱的小胖宝贝,https://goodiptv.club/douyu/238643
 王大齐吖,https://goodiptv.club/douyu/3647278
+<<<<<<< Updated upstream
 精彩短剧看不停,https://goodiptv.club/douyu/11824307
 龙楼宝殿,https://goodiptv.club/douyu/7422897
 文西与阿漆,https://goodiptv.club/douyu/8737695
@@ -268,3 +309,10 @@ sweet夏有甜,https://goodiptv.club/douyu/4808115
 >>>>>>> Stashed changes
 万合鲜肉老师,https://goodiptv.club/douyu/9815091
 影视笑工场,https://goodiptv.club/douyu/10298846
+=======
+龙楼宝殿,https://goodiptv.club/douyu/7422897
+文西与阿漆,https://goodiptv.club/douyu/8737695
+万合鲜肉老师,https://goodiptv.club/douyu/9815091
+影视笑工场,https://goodiptv.club/douyu/10298846
+小小甜的骑士,https://goodiptv.club/douyu/9236042
+>>>>>>> Stashed changes
