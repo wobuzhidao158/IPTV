@@ -75,8 +75,6 @@ http://60.10.139.113:8801/hls/17/index.m3u8
 http://60.10.139.113:8801/hls/26/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",广西卫视
 http://60.10.139.113:8801/hls/52/index.m3u8
-#EXTINF:-1 group-title="📺卫视频道",海南卫视
-http://nn.7x9d.cn/地方台8563/海南.php?id=hnws
 #EXTINF:-1 group-title="📺卫视频道",重庆卫视
 http://60.10.139.113:8801/hls/31/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",四川卫视
@@ -99,8 +97,6 @@ http://60.10.139.113:8801/hls/57/index.m3u8
 http://h.vanshun.com:8802/udp/239.49.0.178:8000$
 #EXTINF:-1 group-title="📺卫视频道",东方卫视
 http://60.10.139.113:8801/hls/22/index.m3u8
-#EXTINF:-1 group-title="📺卫视频道",深圳卫视
-http://nn.7x9d.cn/深圳最新.php?id=szws4k
 #EXTINF:-1 group-title="📺卫视频道",东南卫视
 http://60.10.139.113:8801/hls/21/index.m3u8
 #EXTINF:-1 group-title="📺卫视频道",三沙卫视
@@ -261,8 +257,6 @@ http://38.64.72.148/hls/modn/list/4013/chunklist1.m3u8
 http://38.64.72.148/hls/modn/list/4013/chunklist0.m3u8
 #EXTINF:-1 group-title="其他频道",纬来精彩
 http://61.221.215.25:8800/hls/48/index.m3u8
-#EXTINF:-1 group-title="其他频道",民视
-http://iptv.4666888.xyz/iptv2A.php?id=46
 #EXTINF:-1 group-title="其他频道",民视新闻
 http://74.91.26.218:82/live/ftvnews.m3u8
 #EXTINF:-1 group-title="其他频道",民视新闻台
