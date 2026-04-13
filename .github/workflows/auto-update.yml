@@ -31,15 +31,15 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
-      - name: 运行私源优先脚本
+      - name: 运行私源优先+4K8K分类脚本
         run: python update.py
         timeout-minutes: 25     # 脚本运行超时25分钟
 
-      - name: 提交更新
+      - name: 提交并推送更新
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin main --rebase --autostash
           git add *.m3u *.txt
           git commit -m "🔄 自动更新直播源 [skip ci]" || echo "无变更跳过提交"
-          git push --force origin HEAD
+          git push --force-with-lease origin HEAD
