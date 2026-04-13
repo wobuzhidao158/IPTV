@@ -87,50 +87,20 @@ http://38.75.136.137:98/gslb/dsdqpub/chchd.m3u8?auth=testpub
 http://38.75.136.137:98/gslb/dsdqpub/chcjt.m3u8?auth=testpub
 #EXTINF:-1 group-title="🎬影视频道",淘电影
 http://36.110.54.118:866/hls/21/index.m3u8
-#EXTINF:-1 group-title="🎬影视频道",刘哔电影
-https://goodiptv.club/douyu/2632223
-#EXTINF:-1 group-title="🎬影视频道",前任电影
-https://goodiptv.club/douyu/9329242
 #EXTINF:-1 group-title="🎬影视频道",华语影视
 http://www.goodiptv.club/douyu/3928
 #EXTINF:-1 group-title="🎬影视频道",发条张的电影最TOP
 https://goodiptv.club/douyu/2164691
-#EXTINF:-1 group-title="🎬影视频道",同同电影
-https://goodiptv.club/douyu/10155359
 #EXTINF:-1 group-title="🎬影视频道",哈尔滨影视
 http://stream.hrbtv.net/yspd/sd/live.m3u8?zheild
 #EXTINF:-1 group-title="🎬影视频道",喜剧电影笑不停
 https://goodiptv.club/douyu/10298856
-#EXTINF:-1 group-title="🎬影视频道",四叶草影视
-https://goodiptv.club/douyu/9446117
-#EXTINF:-1 group-title="🎬影视频道",大米饭影视
-https://goodiptv.club/douyu/9824094
-#EXTINF:-1 group-title="🎬影视频道",大荒电影
-https://goodiptv.club/douyu/3508538
-#EXTINF:-1 group-title="🎬影视频道",墨逗电影
-https://goodiptv.club/douyu/9614847
-#EXTINF:-1 group-title="🎬影视频道",天堂电影
-https://goodiptv.club/douyu/9573592
 #EXTINF:-1 group-title="🎬影视频道",浙江教科影视
 http://ali-vl.cztv.com/channels/lantian/channel004/360p.m3u8
 #EXTINF:-1 group-title="🎬影视频道",特辑电影院
 https://goodiptv.club/douyu/3637778
-#EXTINF:-1 group-title="🎬影视频道",狗毛电影
-https://goodiptv.club/douyu/9356637
-#EXTINF:-1 group-title="🎬影视频道",独立鱼电影
-https://goodiptv.club/douyu/2413555
-#EXTINF:-1 group-title="🎬影视频道",猫眼电影
-https://goodiptv.club/douyu/8726221
-#EXTINF:-1 group-title="🎬影视频道",玖月影视
-https://goodiptv.club/douyu/9339251
-#EXTINF:-1 group-title="🎬影视频道",林九影视
-https://goodiptv.club/douyu/7212528
-#EXTINF:-1 group-title="🎬影视频道",每日好电影V
-https://goodiptv.club/douyu/9533302
 #EXTINF:-1 group-title="🎬影视频道",铁甲影院
 https://goodiptv.club/douyu/1274132
-#EXTINF:-1 group-title="🎬影视频道",牛叔说电影二台
-https://goodiptv.club/douyu/10010651
 #EXTINF:-1 group-title="🎬影视频道",刘老师说电影
 https://goodiptv.club/douyu/8317926
 #EXTINF:-1 group-title="🎬影视频道",虫哥说电影
@@ -145,6 +115,14 @@ https://goodiptv.club/douyu/9075333
 https://goodiptv.club/douyu/9639225
 #EXTINF:-1 group-title="🎬影视频道",影视笑工场
 https://goodiptv.club/douyu/10298846
+#EXTINF:-1 group-title="🎬影视频道",美亚电影
+http://iptv.4666888.xyz/iptv2A.php?id=30
+#EXTINF:-1 group-title="🎬影视频道",哈利影视
+https://goodiptv.club/douyu/8475821
+#EXTINF:-1 group-title="🎬影视频道",无际电影
+https://goodiptv.club/douyu/9720498
+#EXTINF:-1 group-title="🎬影视频道",洛克电影
+https://goodiptv.club/douyu/9414884
 #EXTINF:-1 group-title="👦少儿频道",金鹰卡通
 http://60.10.139.113:8801/hls/62/index.m3u8
 #EXTINF:-1 group-title="👦少儿频道",卡酷少儿
@@ -161,8 +139,6 @@ https://ls.qingting.fm/live/4972/64k.m3u8
 https://o11.163189.xyz/stream/tvb/tvbp/
 #EXTINF:-1 group-title="🇭🇰香港频道",TVB翡翠台
 http://cdn6.163189.xyz/163189/fct4k
-#EXTINF:-1 group-title="🇭🇰香港频道",翡翠台
-http://iptv.4666888.xyz/iptv2A.php?id=34
 #EXTINF:-1 group-title="🇭🇰香港频道",香港面包台
 https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
 #EXTINF:-1 group-title="🇭🇰香港频道",凤凰香港
@@ -219,14 +195,6 @@ http://60.10.139.113:8801/hls/45/index.m3u8
 http://60.10.139.113:8801/hls/75/index.m3u8
 #EXTINF:-1 group-title="其他频道",国学频道
 http://60.10.139.113:8801/hls/77/index.m3u8
-#EXTINF:-1 group-title="其他频道",动画大师姐
-https://goodiptv.club/douyu/9742136
-#EXTINF:-1 group-title="其他频道",动画魂
-https://goodiptv.club/douyu/9393242
-#EXTINF:-1 group-title="其他频道",七龙珠
-https://live.metshop.top/huya/11601966
-#EXTINF:-1 group-title="其他频道",中华小当家
-https://live.metshop.top/huya/11342413
 #EXTINF:-1 group-title="其他频道",漫尼动画
 https://goodiptv.club/douyu/10364790
 #EXTINF:-1 group-title="其他频道",立秋动画
@@ -287,22 +255,16 @@ https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m
 https://goodiptv.club/douyu/12560807
 #EXTINF:-1 group-title="其他频道",奇光主播R
 https://goodiptv.club/douyu/12080172
-#EXTINF:-1 group-title="其他频道",小毅主播A
-https://goodiptv.club/douyu/12780285
 #EXTINF:-1 group-title="其他频道",龍組队长天昊
 https://goodiptv.club/douyu/1487654
 #EXTINF:-1 group-title="其他频道",刀刀de食堂
 https://goodiptv.club/douyu/6733133
 #EXTINF:-1 group-title="其他频道",周杰伦颜老师
 https://goodiptv.club/douyu/7537296
-#EXTINF:-1 group-title="其他频道",十七岁的道姑
-https://goodiptv.club/douyu/3186217
 #EXTINF:-1 group-title="其他频道",小毅主播R
 https://goodiptv.club/douyu/12805939
 #EXTINF:-1 group-title="其他频道",崔然竣舞台天才
 https://goodiptv.club/douyu/113158
-#EXTINF:-1 group-title="其他频道",奇兮兮悄陌
-https://goodiptv.club/douyu/953193
 #EXTINF:-1 group-title="其他频道",我砸晕了牛顿奥
 https://goodiptv.club/douyu/1218414
 #EXTINF:-1 group-title="其他频道",崔杋圭五颜一
@@ -315,18 +277,12 @@ https://goodiptv.club/douyu/131977
 https://goodiptv.club/douyu/329667
 #EXTINF:-1 group-title="其他频道",萌小鬼
 https://goodiptv.club/douyu/3928
-#EXTINF:-1 group-title="其他频道",Only丶邵氏
-https://goodiptv.club/douyu/4246519
 #EXTINF:-1 group-title="其他频道",刘松毅
 https://goodiptv.club/douyu/12128227
-#EXTINF:-1 group-title="其他频道",牛奶味的梦猪猪
-https://goodiptv.club/douyu/5261342
 #EXTINF:-1 group-title="其他频道",女团社颜老师
 https://goodiptv.club/douyu/11327316
 #EXTINF:-1 group-title="其他频道",JhZj丶天明
 https://goodiptv.club/douyu/1006179
-#EXTINF:-1 group-title="其他频道",小毅主播e
-https://goodiptv.club/douyu/11851549
 #EXTINF:-1 group-title="其他频道",网神影厅
 https://goodiptv.club/douyu/508118
 #EXTINF:-1 group-title="其他频道",成龙历险纪
@@ -363,8 +319,6 @@ https://goodiptv.club/douyu/9220456
 https://goodiptv.club/douyu/9018297
 #EXTINF:-1 group-title="其他频道",徐大sao
 https://goodiptv.club/douyu/7107176
-#EXTINF:-1 group-title="其他频道",自说自话的总裁
-https://goodiptv.club/douyu/9317739
 #EXTINF:-1 group-title="其他频道",赵本山经典小品
 https://goodiptv.club/douyu/9817716
 #EXTINF:-1 group-title="其他频道",有一辆立标奔驰
@@ -385,16 +339,10 @@ https://goodiptv.club/douyu/9734098
 https://goodiptv.club/douyu/610972
 #EXTINF:-1 group-title="其他频道",游钓中国李大毛
 https://goodiptv.club/douyu/791411
-#EXTINF:-1 group-title="其他频道",史君说剧
-https://goodiptv.club/douyu/9419771
 #EXTINF:-1 group-title="其他频道",篮球人物
 https://goodiptv.club/douyu/8434598
-#EXTINF:-1 group-title="其他频道",sweet夏有甜
-https://goodiptv.club/douyu/4808115
 #EXTINF:-1 group-title="其他频道",大黄喵吖
 https://goodiptv.club/douyu/12392971
-#EXTINF:-1 group-title="其他频道",赵本删不删
-https://goodiptv.club/douyu/9837104
 #EXTINF:-1 group-title="其他频道",咚得勒咚咚
 https://goodiptv.club/douyu/9163452
 #EXTINF:-1 group-title="其他频道",宋小宝小品
@@ -411,26 +359,16 @@ https://goodiptv.club/douyu/10419541
 https://goodiptv.club/douyu/9171887
 #EXTINF:-1 group-title="其他频道",大漠叔叔Dm
 https://goodiptv.club/douyu/1109218
-#EXTINF:-1 group-title="其他频道",堇姑娘
-https://goodiptv.club/douyu/297689
 #EXTINF:-1 group-title="其他频道",蔡老板家的长工丶
 https://goodiptv.club/douyu/8869614
 #EXTINF:-1 group-title="其他频道",渔戈兄弟赶海
 https://goodiptv.club/douyu/9091847
 #EXTINF:-1 group-title="其他频道",小小天才搞笑视频
 https://goodiptv.club/douyu/9419678
-#EXTINF:-1 group-title="其他频道",巫妖王丶怀旧电视游戏
-https://goodiptv.club/douyu/1023277
-#EXTINF:-1 group-title="其他频道",培根悖论唠唠嗑
-https://goodiptv.club/douyu/5354713
-#EXTINF:-1 group-title="其他频道",宇宙探索飞船
-https://goodiptv.club/douyu/9456028
 #EXTINF:-1 group-title="其他频道",1900影剧室
 https://goodiptv.club/douyu/7796193
 #EXTINF:-1 group-title="其他频道",热影连连看
 https://goodiptv.club/douyu/9388931
-#EXTINF:-1 group-title="其他频道",许君聪经典小品
-https://goodiptv.club/douyu/10419558
 #EXTINF:-1 group-title="其他频道",百晓生说剧
 https://goodiptv.club/douyu/9649681
 #EXTINF:-1 group-title="其他频道",少打白骨精
@@ -447,7 +385,33 @@ https://goodiptv.club/douyu/7422897
 https://goodiptv.club/douyu/8737695
 #EXTINF:-1 group-title="其他频道",睡丝虫
 https://goodiptv.club/douyu/10308234
-#EXTINF:-1 group-title="其他频道",万合鲜肉老师
-https://goodiptv.club/douyu/9815091
 #EXTINF:-1 group-title="其他频道",小小甜的骑士
 https://goodiptv.club/douyu/9236042
+#EXTINF:-1 group-title="其他频道",猫和老鼠
+https://live.metshop.top/huya/11352879
+#EXTINF:-1 group-title="其他频道",ROCK Action
+http://iptv.4666888.xyz/iptv2A.php?id=50
+#EXTINF:-1 group-title="其他频道",娱乐新闻台
+http://iptv.4666888.xyz/iptv2A.php?id=36
+#EXTINF:-1 group-title="其他频道",蕃薯粥粥煮好了
+https://goodiptv.club/douyu/11878141
+#EXTINF:-1 group-title="其他频道",草帽丶海贼团
+https://goodiptv.club/douyu/997925
+#EXTINF:-1 group-title="其他频道",科幻Fans布玛
+https://goodiptv.club/douyu/3508304
+#EXTINF:-1 group-title="其他频道",往事vs随风
+https://goodiptv.club/douyu/3113309
+#EXTINF:-1 group-title="其他频道",胡椒粉的胡歌
+https://goodiptv.club/douyu/5448413
+#EXTINF:-1 group-title="其他频道",荒野有声书
+https://goodiptv.club/douyu/10650322
+#EXTINF:-1 group-title="其他频道",老烟斗鬼故事
+https://goodiptv.club/douyu/2337939
+#EXTINF:-1 group-title="其他频道",芙芙家的洗碗君
+https://goodiptv.club/douyu/9446706
+#EXTINF:-1 group-title="其他频道",碎片记
+https://goodiptv.club/douyu/9412981
+#EXTINF:-1 group-title="其他频道",一个机智张张
+https://goodiptv.club/douyu/9653063
+#EXTINF:-1 group-title="其他频道",南国小豆豆
+https://goodiptv.club/douyu/3310454
