@@ -110,7 +110,6 @@ TVBS亚洲备选,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f
 纬来精彩,http://61.221.215.25:8800/hls/48/index.m3u8
 民视新闻,http://74.91.26.218:82/live/ftvnews.m3u8
 民视新闻台,http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
-龙华洋片,http://iptv.4666888.xyz/iptv2A.php?id=60
 CAPITALTV,http://live.stranafm.cdnvideo.ru/stranafm/stranafm_hd.sdp/playlist.m3u8
 Hope,http://tvhope.cdnvideo.ru/tvhope-pull/tvhope_1/playlist.m3u8
 ZOO MOO,https://zoomoo-samsungau.amagi.tv/playlist1080p.m3u8
