@@ -6,21 +6,16 @@ from datetime import datetime
 from collections import defaultdict
 
 # ===================== 配置区 =====================
-# 最低分辨率分数：70=1080p，85=4K
 MIN_RESOLUTION_SCORE = 70
-# 存活检测超时时间（秒）
 CHECK_TIMEOUT = 3
-# 本地源文件
 LOCAL_TXT = "直播源.txt"
-# 输出M3U文件
 OUT_M3U = "直播汇总.m3u"
-# 日志文件
 LOG_TXT = "更新日志.txt"
 
 # 网络源接口（请替换为你的真实API地址）
 NETWORK_SOURCES = [
-    "https://your-api-1.com/iptv.txt",  # 替换为你的API地址
-    "https://your-api-2.com/iptv.m3u",  # 替换为你的备用地址
+    "https://your-api-1.com/iptv.txt",
+    "https://your-api-2.com/iptv.m3u",
 ]
 
 # ===================== 频道分类配置 =====================
@@ -48,13 +43,33 @@ PROVINCE_ORDER = [
 
 # ===================== 工具函数 =====================
 def clean_channel_name(name):
-    """清理频道名，移除多余字符"""
-    # 移除常见的备注信息
-    name = re.sub(r'[\(\[（【].*?[\)\]）】]', '', name)
-    name = re.sub(r'[_\-\s]*\d+[PpKk]?\b', '', name)
-    name = re.sub(r'[_\-\s]*(高清|超清|标清|HD|FHD|UHD|SD)\b', '', name)
-    # 移除多余空格
-    name = re.sub(r'\s+', ' ', name).strip()
+    """
+    彻底清理频道名，只保留纯净名称
+    移除所有括号、分辨率、IPV4、Not24/7等标记
+    """
+    # 1. 移除各种括号及其内容
+    name = re.sub(r'[\[\(（【].*?[\]\)）】]', '', name)
+    
+    # 2. 移除分辨率标记（1080p、720p、4K、HD等）
+    name = re.sub(r'\b\d+[Pp]\b', '', name)
+    name = re.sub(r'\b(4K|8K|HD|FHD|UHD|SD|高清|超清|标清)\b', '', name, flags=re.IGNORECASE)
+    
+    # 3. 移除特殊标记
+    name = re.sub(r'\b(IPV4|IPV6|IPV4/IPV6)\b', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'\[Not24/7\]', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'Not24/7', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'24/7', '', name)
+    
+    # 4. 移除数字后缀（如 "综合1"、"新闻2"）
+    name = re.sub(r'\d+$', '', name)
+    
+    # 5. 移除多余的空格和符号
+    name = re.sub(r'[_\-\s]+', ' ', name)
+    name = name.strip()
+    
+    # 6. 移除前后可能残留的符号
+    name = re.sub(r'^[\s\-_]+|[\s\-_]+$', '', name)
+    
     return name
 
 def normalize_name(name):
@@ -172,15 +187,16 @@ def main():
         with open(LOCAL_TXT, 'r', encoding='utf-8') as f:
             for line in cut_lines(f.read()):
                 if ',' in line:
-                    name, url = line.split(',', 1)
-                    name = clean_channel_name(name.strip())
-                    url = url.strip()
-                    if url.startswith('http'):
-                        key = normalize_name(name)
-                        local_sources[key] = (name, url)
+                    parts = line.split(',', 1)
+                    if len(parts) == 2:
+                        name = clean_channel_name(parts[0].strip())
+                        url = parts[1].strip()
+                        if url.startswith('http') and name:
+                            key = normalize_name(name)
+                            local_sources[key] = (name, url)
     print(f"📂 读取本地源: {len(local_sources)} 个")
     
-    # 2. 检测本地源，失效的标记待替换
+    # 2. 检测本地源
     valid_local = {}
     need_replace = []
     
@@ -192,7 +208,7 @@ def main():
     
     print(f"✅ 本地源有效: {len(valid_local)} | 失效: {len(need_replace)}")
     
-    # 3. 从网络抓取新源（只抓取失效频道的替换）
+    # 3. 从网络抓取新源
     network_sources = {}
     if need_replace:
         print("🌐 从网络抓取新源...")
@@ -201,18 +217,20 @@ def main():
             all_lines.extend(fetch_url_content(src))
         
         for name, url in parse_sources(all_lines):
-            name = clean_channel_name(name)
-            key = normalize_name(name)
+            clean_name = clean_channel_name(name)
+            if not clean_name:
+                continue
+            key = normalize_name(clean_name)
             if key in need_replace and key not in network_sources:
-                if is_qualified(name, url):
-                    network_sources[key] = (name, url)
+                if is_qualified(clean_name, url):
+                    network_sources[key] = (clean_name, url)
         
         print(f"📡 抓取到新源: {len(network_sources)} 个")
     
-    # 4. 合并结果（本地有效 + 网络替换）
+    # 4. 合并结果
     final_sources = dict(valid_local)
-    for key, (name, url) in network_sources.items():
-        final_sources[key] = (name, url)
+    for key, value in network_sources.items():
+        final_sources[key] = value
     
     # 5. 保存更新后的本地源
     with open(LOCAL_TXT, 'w', encoding='utf-8') as f:
