@@ -1,4 +1,5 @@
-🛜网络央视,#genre#
+#EXTM3U
+#EXTGRP:网络央视
 CCTV1,webview://https://yangshipin.cn/tv/home?pid=600001859
 CCTV1,webview://https://tv.cctv.com/live/cctv1/
 CCTV2,webview://https://yangshipin.cn/tv/home?pid=600001800
@@ -39,19 +40,7 @@ CCTV16,webview://https://yangshipin.cn/tv/home?pid=600098637
 CCTV16,webview://https://tv.cctv.com/live/cctv16/
 CCTV17,webview://https://yangshipin.cn/tv/home?pid=600001810
 CCTV17,webview://https://tv.cctv.com/live/cctv17/
-CGTN英语,webview://https://yangshipin.cn/tv/home?pid=600014550
-CGTN记录,webview://https://yangshipin.cn/tv/home?pid=600084781
-CGTN俄语,webview://https://yangshipin.cn/tv/home?pid=600084758
-CGTN法语,webview://https://yangshipin.cn/tv/home?pid=600084704
-CGTN西语,webview://https://yangshipin.cn/tv/home?pid=600084744
-CGTN阿语,webview://https://yangshipin.cn/tv/home?pid=600084782
-CCTV风云剧场,webview://https://yangshipin.cn/tv/home?pid=600099658
-CCTV第一剧场,webview://https://yangshipin.cn/tv/home?pid=600099655
-CCTV怀旧剧场,webview://https://yangshipin.cn/tv/home?pid=600099620
-CETV1,webview://https://tv.gxtv.cn/channel/channelivePlay_ffa6b6e1b32b4a16a73eb3ef66f8bfc7.html
-CETV2,webview://https://tv.gxtv.cn/channel/channelivePlay_80d0ffb42c114eaf9663708629ff0a3e.html
-CETV4,webview://https://tv.gxtv.cn/channel/channelivePlay_67eace939278435bb4bca90800fb4225.html
-🛜网络卫视,#genre#
+#EXTGRP:网络卫视
 安徽卫视,webview://https://yangshipin.cn/tv/home?pid=600002532
 北京卫视,webview://https://yangshipin.cn/tv/home?pid=600002309
 重庆卫视,webview://https://yangshipin.cn/tv/home?pid=600002531
