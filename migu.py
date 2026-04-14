@@ -2,7 +2,6 @@ import os
 import time
 import requests
 
-# 配置
 MIGU_UID = os.getenv("MIGU_UID", "")
 MIGU_TOKEN = os.getenv("MIGU_TOKEN", "")
 MAX_RETRY = 3
@@ -35,11 +34,9 @@ MIGU_CHANNELS = {
 
 def get_migu_url(cid, name):
     api = "https://api.miguvideo.com/v1.0/live/playurl"
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://tv.miguvideo.com"
-    }
-    params = {"cid":cid,"uid":MIGU_UID,"token":MIGU_TOKEN,"quality":"sh"}
+    headers = {"User-Agent": "Mozilla/5.0", "Referer": "https://tv.miguvideo.com"}
+    params = {"cid": cid, "uid": MIGU_UID, "token": MIGU_TOKEN, "quality": "sh"}
+
     for _ in range(MAX_RETRY):
         try:
             res = requests.get(api, headers=headers, params=params, timeout=15)
@@ -52,12 +49,13 @@ def get_migu_url(cid, name):
     return None
 
 if __name__ == "__main__":
-    lines = ["#EXTM3U","#EXTINF:-1 group-title=\"咪咕1080P\",咪咕1080P高清"]
-    for name,cid in MIGU_CHANNELS.items():
-        url = get_migu_url(cid,name)
+    lines = ["#EXTM3U", "#EXTINF:-1 group-title=\"咪咕1080P\",咪咕1080P高清"]
+    for name, cid in MIGU_CHANNELS.items():
+        url = get_migu_url(cid, name)
         if url:
             lines.append(f"#EXTINF:-1 group-title=\"咪咕1080P\",{name}")
             lines.append(url)
-    with open(OUTPUT_PATH,"w",encoding="utf-8") as f:
+
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     print("✅ migu.m3u 生成完成")
