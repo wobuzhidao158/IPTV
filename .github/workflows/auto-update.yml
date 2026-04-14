@@ -2,43 +2,53 @@ name: 电信专属·直播源自动更新
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # 每6小时自动跑一次
-  workflow_dispatch: # 允许手动点运行
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write # 必须开启，否则无法提交生成的m3u文件
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: 配置Git
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: Git 安全配置
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      
-      - name: 配置Python
+          git config --global --add safe.directory /github/workspace
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 配置 Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      
+
       - name: 安装依赖
         run: pip install requests -q
-      
-      - name: 生成咪咕源
+
+      - name: 生成咪咕 1080P 源
         env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
-      
-      - name: 合并并过滤(电信/1080P)
+
+      - name: 合并私源 + 全网源 (过滤1080P及以下/电信专属)
         run: python update.py
-      
-      - name: 提交推送
+
+      - name: 提交推送（修复unstaged冲突版）
         run: |
-          git pull --rebase
-          git add ./*.m3u
-          git commit -m "🔄 自动更新电信直播源 [skip ci]" || echo "无需提交"
-          git push
+          # 自动暂存未提交文件，解决rebase报错
+          git stash push -m "auto-stash" || echo "无文件可暂存"
+          # 拉取远程最新代码
+          git pull origin main --rebase
+          # 恢复暂存文件
+          git stash pop || echo "无暂存文件可恢复"
+          # 仅添加m3u文件，避免误提交
+          git add *.m3u
+          # 提交变更（无变更则跳过）
+          git commit -m "🔄 自动更新电信直播源 [skip ci]" || echo "无变更，跳过提交"
+          # 推送至远程
+          git push origin main
