@@ -1,12 +1,18 @@
-name: 电信专属·直播源自动更新
+name: 电信专属·直播源自动更新（终极稳定版）
 
 on:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 permissions:
   contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -35,17 +41,13 @@ jobs:
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
 
-      - name: 合并私源 + 全网源 (过滤1080P及以下/电信专属)
+      - name: 合并私源 + 电信低码过滤
         run: python update.py
 
-      - name: 提交推送（修复unstaged冲突版）
+      - name: 提交推送（彻底解决unstaged冲突）
         run: |
-          # 自动暂存未提交文件，解决rebase报错
-          git stash push -m "auto-stash" || echo "无文件可暂存"
-          # 拉取远程最新代码
-          git pull origin main --rebase
-          # 恢复暂存文件
-          git stash pop || echo "无暂存文件可恢复"
+          # 方案1：用--autostash自动暂存，一行解决所有问题（GitHub Actions官方推荐）
+          git pull origin main --rebase --autostash
           # 仅添加m3u文件，避免误提交
           git add *.m3u
           # 提交变更（无变更则跳过）
