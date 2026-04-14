@@ -1,4 +1,4 @@
-name: 私源优先直播源自动更新
+name: 私源优先直播源自动更新 (仅1080P)
 
 on:
   schedule:
@@ -36,18 +36,21 @@ jobs:
       - name: 安装依赖
         run: pip install requests -q
 
+      # 步骤1：生成咪咕1080P源（保持不变）
       - name: 生成咪咕 1080P 源
         env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
 
-      - name: 合并私源 + 全网源 + 4K8K 分类
+      # 步骤2：运行合并脚本（已修改为只输出1080P全量源）
+      - name: 合并私源 + 全网源 (过滤1080P及以下)
         run: python update.py
 
+      # 步骤3：提交推送
       - name: 提交推送
         run: |
           git pull origin main --rebase --autostash
           git add *.m3u
-          git commit -m "🔄 自动更新直播源 [skip ci]" || echo "无变更跳过"
+          git commit -m "🔄 自动更新：仅保留1080P及以下源 [skip ci]" || echo "无变更跳过"
           git push origin main
