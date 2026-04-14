@@ -2,51 +2,52 @@ name: 私源优先直播源自动更新
 
 on:
   schedule:
-    - cron: '0 */6 * * *'      # 每6小时运行一次
-  workflow_dispatch:            # 允许手动触发
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
   push:
-    branches: [ main ]          # 推送代码时触发
+    branches: [ main ]
 
 permissions:
-  contents: write               # 授予写入权限
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false     # 不自动取消正在运行的任务
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30         # 总超时30分钟
 
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
 
-      - name: 配置Python环境
+      - name: 全局Git配置 & 安全目录
+        run: |
+          git config --global --add safe.directory /github/workspace
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 配置Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: 安装依赖
-        run: pip install requests
+        run: pip install requests -q
 
-      - name: 生成咪咕1080P源（含失效重试）
+      - name: 生成咪咕1080P高清源
         env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
-        timeout-minutes: 10
 
-      - name: 运行私源优先+4K8K分类脚本
+      - name: 合并私源 + 全网源 + 4K8K分类
         run: python update.py
-        timeout-minutes: 25     # 脚本运行超时25分钟
 
-      - name: 提交并推送更新
+      - name: 提交推送
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin main --rebase --autostash
-          git add *.m3u *.txt
-          git commit -m "🔄 自动更新直播源 [skip ci]" || echo "无变更跳过提交"
-          git push --force-with-lease origin HEAD
+          git add *.m3u
+          git commit -m "🔄 自动更新直播源 [skip ci]" || echo "无变更，跳过提交"
+          git push origin main
