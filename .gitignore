@@ -4,7 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 
-# 日志 & 临时文件
+# 日志 / 临时文件
 *.log
 *.tmp
 *.bak
