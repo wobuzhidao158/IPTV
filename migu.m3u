@@ -1,44 +1,35 @@
-#EXTM3U
-#EXTINF:-1 group-title="咪咕1080P",【咪咕1080P】央卫总控
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV1综合【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV2财经【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV3综艺【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV4中文国际【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV5体育【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV6电影【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV7军事农业【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV8电视剧【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV9纪录【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV10科教【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV11戏曲【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV12社会与法【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV13新闻【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",CCTV15音乐【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",东方卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",浙江卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",湖南卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",江苏卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",北京卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",广东卫视【源失效】
-https://example.com/invalid
-#EXTINF:-1 group-title="咪咕1080P失效",深圳卫视【源失效】
-https://example.com/invalid
+CCTV1,http://43.251.226.110:8880/play/93.m3u8
+CCTV2,http://43.251.226.110:8880/play/94.m3u8
+CCTV3,http://43.251.226.110:8880/play/95.m3u8
+CCTV4,http://43.251.226.110:8880/play/96.m3u8
+CCTV5,http://43.251.226.110:8880/play/97.m3u8
+CCTV5+,http://43.251.226.110:8880/play/98.m3u8
+CCTV8,http://43.251.226.110:8880/play/101.m3u8
+CCTV11,http://43.251.226.110:8880/play/104.m3u8
+CCTV12,http://43.251.226.110:8880/play/105.m3u8
+CCTV15,http://43.251.226.110:8880/play/108.m3u8
+CCTV4美洲,http://43.251.226.110:8880/play/111.m3u8
+体坛名栏汇,http://43.251.226.110:8880/play/113.m3u8
+陕西体育,http://43.251.226.110:8880/play/116.m3u8
+辽宁体育,http://43.251.226.110:8880/play/117.m3u8
+东方卫视,http://43.251.226.110:8880/play/118.m3u8
+江苏卫视,http://43.251.226.110:8880/play/119.m3u8
+广东卫视,http://43.251.226.110:8880/play/120.m3u8
+河北卫视,http://43.251.226.110:8880/play/123.m3u8
+农林卫视,http://43.251.226.110:8880/play/127.m3u8
+上海新闻综合,http://43.251.226.110:8880/play/129.m3u8
+上视东方影视,http://43.251.226.110:8880/play/130.m3u8
+盐城新闻综合,http://43.251.226.110:8880/play/132.m3u8
+江阴新闻综合,http://43.251.226.110:8880/play/133.m3u8
+溧水新闻综合,http://43.251.226.110:8880/play/136.m3u8
+陕西银龄频道,http://43.251.226.110:8880/play/137.m3u8
+陕西新闻资讯频道,http://43.251.226.110:8880/play/140.m3u8
+财富天下,http://43.251.226.110:8880/play/141.m3u8
+辽宁公共频道,http://43.251.226.110:8880/play/142.m3u8
+辽宁生活频道,http://43.251.226.110:8880/play/143.m3u8
+宁夏经济频道,http://43.251.226.110:8880/play/146.m3u8
+经典香港电影,http://43.251.226.110:8880/play/147.m3u8
+抗战经典影片,http://43.251.226.110:8880/play/148.m3u8
+CHC影迷电影,http://43.251.226.110:8880/play/150.m3u8
+CHC动作电影,http://43.251.226.110:8880/play/151.m3u8
+CHC家庭影院,http://43.251.226.110:8880/play/152.m3u8
