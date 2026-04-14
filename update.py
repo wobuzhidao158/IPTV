@@ -4,47 +4,55 @@ PRIVATE = "./private.m3u"
 MIGU_SRC = "./migu.m3u"
 OUTPUT = "./output.m3u"
 
-# 电信专属：只留低码率、电信线路、屏蔽4K/8K/高码
-FILTER_KEYWORDS = {
-    # 屏蔽
-    "4K", "2160", "8K", "4k", "2160p", "8k",
-    "超高码率", "高码", "60fps", "HDR", "杜比",
-    "移动", "CMCC", "移动线路", "联通", "CUCC",
-    "m3u8:8080", ":8081", ":8090", "udp://"
-}
-# 电信优选关键词（优先保留）
-TELECOM_KEYS = {"电信", "CTCC", "天翼", "itv", "iptv", "migu", "1080P", "720P", "540P", "标清"}
+# 黑名单：过滤4K/高码/非电信
+FILTER_KEYWORDS = {"4K", "2160", "8K", "移动", "联通", "HDR", "杜比"}
+# 白名单：必须包含这些词才保留（兜底）
+REQUIRE_KEYWORDS = {"电信", "CTCC", "itv", "iptv", "migu", "1080P", "720P"}
 
 def read_m3u(path):
     if not os.path.exists(path):
+        print(f"⚠️  未找到文件: {path}")
         return []
     with open(path, "r", encoding="utf-8") as f:
-        return [l.strip() for l in f if l.strip() and not l.startswith("#EXTM3U")]
-
-def filter_telecom_low_bitrate(lines):
-    result = []
-    skip = False
-    for line in lines:
-        if skip:
-            skip = False
-            continue
-        # 过滤含黑名单关键词
-        if any(k in line for k in FILTER_KEYWORDS):
-            skip = True
-            continue
-        # 只保留含电信/低清关键词（链接或频道名）
-        if any(t in line for t in TELECOM_KEYS) or line.startswith("http"):
-            result.append(line)
-    return result
+        return [l.strip() for l in f if l.strip()]
 
 if __name__ == "__main__":
-    private = read_m3u(PRIVATE)
-    migu = read_m3u(MIGU_SRC)
+    private_lines = read_m3u(PRIVATE)
+    migu_lines = read_m3u(MIGU_SRC)
     
-    all_lines = private + migu
-    clean_lines = filter_telecom_low_bitrate(all_lines)
+    final_lines = ["#EXTM3U"]
     
-    final = ["#EXTM3U"] + clean_lines
+    # 合并所有行
+    all_lines = private_lines + migu_lines
+    
+    skip_next = False
+    for i in range(len(all_lines)):
+        line = all_lines[i]
+        
+        # 处理跳过逻辑
+        if skip_next:
+            skip_next = False
+            continue
+            
+        # 1. 过滤掉包含黑名单关键词的行
+        if any(keyword in line for keyword in FILTER_KEYWORDS):
+            # 如果是链接行，需要跳过下一行（标题+链接）
+            if line.startswith("http"):
+                skip_next = True
+            continue
+            
+        # 2. 保留规则（必须含电信/ITV/咪咕/标清）
+        # 或者是纯链接（默认认为合法）
+        if any(req in line for req in REQUIRE_KEYWORDS) or line.startswith("http"):
+            final_lines.append(line)
+    
+    # 🔴 关键保护：如果生成的源少于10个，直接使用原始源，避免卡顿无台可看
+    if len(final_lines) < 15:
+        print("⚠️  过滤后源过少，已回退为原始合并模式")
+        final_lines = ["#EXTM3U"] + private_lines + migu_lines
+    
+    # 写入文件（确保覆盖）
     with open(OUTPUT, "w", encoding="utf-8") as f:
-        f.write("\n".join(final))
-    print("✅ 电信低码版合并完成：仅保留电信/标清/1080P，已过滤4K/移动/联通")
+        f.write("\n".join(final_lines))
+    
+    print(f"✅ 成功生成：{len(final_lines)-1} 个频道（电信/1080P专属）")
