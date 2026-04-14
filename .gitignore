@@ -1,34 +1,19 @@
-# Gradle files
-.gradle/
-build/
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log/OS Files
+# 日志 & 临时文件
 *.log
+*.tmp
+*.bak
 
-# Android Studio generated files and folders
-captures/
-.externalNativeBuild/
-.cxx/
-*.aab
-*.apk
-output-metadata.json
+# 系统垃圾
+.DS_Store
+Thumbs.db
 
-# IntelliJ
-*.iml
+# 编辑器配置
 .idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
-
-# Keystore files
-*.jks
-*.keystore
-
-# Google Services (e.g. APIs or Firebase)
-google-services.json
-
-# Android Profiling
-*.hprof
+*.iml
+.vscode/
