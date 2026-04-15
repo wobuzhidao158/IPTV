@@ -1,5 +1,4 @@
 name: 电信专属·直播源自动更新（阿克苏720P终极稳定版）
-
 on:
   schedule:
     - cron: '0 */6 * * *'
@@ -9,58 +8,44 @@ on:
     paths-ignore:
       - '*.md'
       - 'README.md'
-
 permissions:
   contents: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: 拉取代码
-        uses: actions/checkout@v4
-
-      - name: 配置国内Python镜像+环境
+      - uses: actions/checkout@v4
+      - name: 国内镜像
         run: |
           pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
           pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
           export LANG=C.UTF-8
-
-      - name: Git 全局安全配置
+      - name: Git配置
         run: |
           git config --global --add safe.directory /github/workspace
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: 配置Python环境（修复缓存报错）
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          check-latest: false
-          update-environment: true
-
-      - name: 安装依赖（稳定版）
+      - name: 安装依赖
         run: |
           python -m pip install --upgrade pip
           pip install requests
-
-      - name: 生成咪咕720P稳定源（核心修改）
+      - name: 生成咪咕720P
         env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
-
-      - name: 合并私源+电信过滤+阿克苏IP优化+4K8K分离
+      - name: 合并+阿克苏IP+分组
         run: python update.py
-
-      - name: 提交推送（彻底解决冲突）
+      - name: 提交
         run: |
           git pull origin main --rebase --autostash
           git add *.m3u
-          git commit -m "🔄 自动更新(阿克苏720P稳定版) [skip ci]" || echo "无变更，跳过提交"
+          git commit -m "🔄 自动更新(最终稳定版·不再删台) [skip ci]" || echo "无变更"
           git push origin main
