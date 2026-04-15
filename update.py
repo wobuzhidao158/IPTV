@@ -1,90 +1,150 @@
 import os
+import re
+import requests
+from ipaddress import ip_address, ip_network
 
+# 文件配置
 PRIVATE = "./private.m3u"
 MIGU_SRC = "./migu.m3u"
-OUTPUT = "./output.m3u"
+OUTPUT_MAIN = "./output.m3u"
+OUTPUT_4K8K = "./output_4k8k.m3u"
 
-# 黑名单：过滤4K/8K/高码/移动联通/危险端口
-FILTER_KEYWORDS = {
-    "4K", "2160", "8K", "4k", "2160p", "8k",
-    "超高码率", "高码", "60fps", "HDR", "杜比",
-    "移动", "CMCC", "移动线路", "联通", "CUCC",
-    "udp://", ":8080", ":8081", ":8090", ":9000",
-    "超清增强", "极致", "蓝光"
-}
+# 阿克苏电信固定IP段（兜底）
+AKESU_FIXED_CIDR = [
+    "110.157.192.0/22", "110.157.196.0/22", "110.157.200.0/21",
+    "110.156.213.0/24", "110.156.223.0/24", "110.156.227.0/24"
+]
 
-# 白名单：优先保留电信/低码/1080P
-TELECOM_KEYS = {
-    "电信", "CTCC", "天翼", "itv", "iptv", 
-    "migu", "1080P", "720P", "540P", "标清", "高清"
-}
+# 常用电信代理端口（组播转发常用）
+AKESU_PORTS = ["8080", "6666", "4022", "5140", "5146", "8000"]
 
+# 过滤规则
+FILTER_KEYWORDS = {"4K","8K","2160","高码","60fps","HDR","杜比","移动","CMCC","联通","CUCC","udp://"}
+UHD_KEYWORDS = {"4K","8K","2160","UHD","超高清"}
+TELECOM_KEYS = {"电信","CTCC","天翼","itv","iptv","migu","1080P","720P"}
+
+# ------------------------------
+# 1. 自动获取最新阿克苏电信IP
+# ------------------------------
+def fetch_latest_akesu_cidr():
+    try:
+        url = "https://ispip.clang.cn/chinatelecom_cidr.html"
+        r = requests.get(url, timeout=10)
+        cidrs = re.findall(r'(\d+\.\d+\.\d+\.\d+/\d+)', r.text)
+        akesu = []
+        for c in cidrs:
+            net = ip_network(c, strict=False)
+            if any(net.overlaps(ip_network(fc)) for fc in AKESU_FIXED_CIDR):
+                akesu.append(c)
+        return list(set(akesu + AKESU_FIXED_CIDR))[:8]
+    except:
+        print("⚠️ 自动获取失败，使用固定阿克苏段")
+        return AKESU_FIXED_CIDR[:8]
+
+AKESU_NETS = [ip_network(c) for c in fetch_latest_akesu_cidr()]
+
+# ------------------------------
+# 2. 判断IP是否阿克苏电信
+# ------------------------------
+def is_akesu_ip(ip_str):
+    try:
+        ip = ip_address(ip_str)
+        return any(ip in net for net in AKESU_NETS)
+    except:
+        return False
+
+# ------------------------------
+# 3. 自动补充阿克苏IP+端口
+# ------------------------------
+def rewrite_to_akesu(url):
+    match = re.match(r'https?://([^:/]+):?(\d+)?(/.*)?', url)
+    if not match:
+        return url
+    host, port, path = match.groups()
+    if is_akesu_ip(host):
+        return url
+    # 随机选阿克苏IP+端口
+    import random
+    new_ip = random.choice([str net.network_address for net in AKESU_NETS])
+    new_port = random.choice(AKESU_PORTS)
+    new_path = path if path else "/udp/239.3.1.1:5140"
+    return f"http://{new_ip}:{new_port}{new_path}"
+
+# ------------------------------
+# 4. 读取、拆分、过滤、去重
+# ------------------------------
 def read_m3u(path):
     if not os.path.exists(path):
-        print(f"⚠️  未找到文件: {path}")
+        print(f"⚠️ 未找到: {path}")
         return []
-    with open(path, "r", encoding="utf-8") as f:
-        lines = [l.rstrip("\n") for l in f]
-        # 过滤空行、保留所有内容（后续统一处理）
-        return [line for line in lines if line.strip() != ""]
+    with open(path,"r",encoding="utf-8") as f:
+        return [l.strip() for l in f if l.strip()]
 
-def filter_telecom_low_bitrate(lines):
-    result = []
-    skip_next = False
-
-    for line in lines:
-        if skip_next:
-            skip_next = False
-            continue
-        
-        # 黑名单命中：跳过当前行 + 下一行链接
-        if any(key in line for key in FILTER_KEYWORDS):
-            skip_next = True
-            continue
-        
-        # 规则：
-        # 1. 链接全部保留
-        # 2. 频道信息行：含白名单 或 常规央视/卫视 直接放行
-        if line.startswith("http") or any(t in line for t in TELECOM_KEYS):
-            result.append(line)
+def split_uhd_normal(lines):
+    normal, uhd = [], []
+    i=0; n=len(lines)
+    while i < n:
+        line = lines[i]
+        if line.startswith("#EXTINF") and i+1 < n:
+            url = lines[i+1]
+            if any(k in line for k in UHD_KEYWORDS):
+                uhd.append(line)
+                uhd.append(rewrite_to_akesu(url))
+            else:
+                normal.append(line)
+                normal.append(rewrite_to_akesu(url))
+            i += 2
         else:
-            # 普通常规频道不放黑名单也保留，防止误删台
-            result.append(line)
+            normal.append(line)
+            i += 1
+    return normal, uhd
 
-    return result
+def filter_list(lines):
+    res, skip = [], False
+    for line in lines:
+        if skip: skip=False; continue
+        if any(k in line for k in FILTER_KEYWORDS):
+            skip=True
+            continue
+        if line.startswith("http") or any(t in line for t in TELECOM_KEYS):
+            res.append(line)
+        else:
+            res.append(line)
+    return res
 
 def deduplicate(lines):
-    """链接去重，保留第一条"""
-    seen_url = set()
-    final = []
+    seen=set(); out=[]
     for line in lines:
         if line.startswith("http"):
-            if line in seen_url:
-                continue
-            seen_url.add(line)
-        final.append(line)
-    return final
+            if line in seen: continue
+            seen.add(line)
+        out.append(line)
+    return out
 
+def save(path, lines):
+    with open(path,"w",encoding="utf-8") as f:
+        f.write("#EXTM3U\n"+"\n".join(lines))
+
+# ------------------------------
+# 主流程
+# ------------------------------
 if __name__ == "__main__":
-    # 读取文件
     private = read_m3u(PRIVATE)
     migu = read_m3u(MIGU_SRC)
-
-    # 合并：私源优先
     all_lines = private + migu
 
-    # 过滤 + 去重
-    clean_lines = filter_telecom_low_bitrate(all_lines)
-    clean_lines = deduplicate(clean_lines)
+    normal, uhd = split_uhd_normal(all_lines)
+    normal = filter_list(normal)
+    normal = deduplicate(normal)
+    uhd = deduplicate(uhd)
 
-    # 过滤后过少，直接回退原始合并
-    if len(clean_lines) < 15:
-        print("⚠️  过滤后源过少，回退为原始合并模式")
-        clean_lines = deduplicate(private + migu)
+    if len(normal) < 15:
+        print("⚠️ 普通源过少，恢复原始")
+        normal = deduplicate(private + migu)
 
-    # 写入标准 M3U
-    final_content = ["#EXTM3U"] + clean_lines
-    with open(OUTPUT, "w", encoding="utf-8") as f:
-        f.write("\n".join(final_content))
+    save(OUTPUT_MAIN, normal)
+    save(OUTPUT_4K8K, uhd)
 
-    print(f"✅ 合并完成 | 私源优先 | 仅保留电信低码/1080P | 最终频道数: {len(clean_lines)}")
+    print(f"✅ 生成完成")
+    print(f"📺 普通({len(normal)}) | 🎬 4K8K({len(uhd)})")
+    print(f"📍 已强制优先阿克苏电信IP")
