@@ -183,30 +183,19 @@ Hope group-title="其他频道",http://tvhope.cdnvideo.ru/tvhope-pull/tvhope_1/p
 ROCK Action group-title="其他频道",http://iptv.4666888.xyz/iptv2A.php?id=50
 娱乐新闻台 group-title="地方频道",http://iptv.4666888.xyz/iptv2A.php?id=36
 #EXTINF:-1 group-title="央视720P",CCTV1综合
-<<<<<<< Updated upstream
-http://110.156.223.1:6666/udp/103.236.87.67:3000
-=======
-http://110.157.192.1:4022/udp/103.236.87.67:3000
->>>>>>> Stashed changes
-#EXTINF:-1 group-title="央视720P",CCTV2财经
-http://110.157.192.1:5140/udp/103.236.87.67:3000
-#EXTINF:-1 group-title="央视720P",CCTV3综艺
-<<<<<<< Updated upstream
 http://36.109.231.253:5146/udp/103.236.87.67:3000
-#EXTINF:-1 group-title="央视720P",CCTV4中文国际
-=======
-http://110.157.192.1:5140/udp/103.236.87.67:3000
-#EXTINF:-1 group-title="央视720P",CCTV4中文国际
+#EXTINF:-1 group-title="央视720P",CCTV2财经
+#EXTINF:-1 group-title="央视720P",CCTV3综艺
 http://110.156.223.1:6666/udp/103.236.87.67:3000
->>>>>>> Stashed changes
+#EXTINF:-1 group-title="央视720P",CCTV4中文国际
 #EXTINF:-1 group-title="央视720P",CCTV5体育
 #EXTINF:-1 group-title="央视720P",CCTV5+体育赛事
 #EXTINF:-1 group-title="央视720P",CCTV6电影
-http://110.157.192.1:4022/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV7国防军事
-http://36.109.231.253:5146/udp/103.236.87.67:3000
+http://110.157.192.1:4022/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV8电视剧
 #EXTINF:-1 group-title="央视720P",CCTV9纪录
+http://110.157.192.1:5140/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV10科教
 #EXTINF:-1 group-title="央视720P",CCTV11戏曲
 #EXTINF:-1 group-title="央视720P",CCTV12社会与法
