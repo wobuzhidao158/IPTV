@@ -1,29 +1,63 @@
-name: 电信专属·直播源自动更新（阿克苏本地稳定版）
+name: 电信专属·直播源自动更新（终极稳定版）
+
 on:
-  schedule: [{cron: '0 */6 * * *'}]
-  workflow_dispatch:
-  push: {branches: [main]}
-permissions: {contents: write}
-concurrency: {group: ${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: false}
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时自动运行一次
+  workflow_dispatch:       # 支持手动触发
+  push:
+    branches: [ main ]     # 代码提交时触发
+
+permissions:
+  contents: write          # 给足写入权限，提交不报错
+
+# 🔴 核心：并发控制，彻底解决排队卡死
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # 不取消正在运行的任务，只排队，避免冲突
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15  # ⏱️ 超时保护，15分钟自动结束，防止卡死
     steps:
-      - uses: actions/checkout@v4
-      - run: |
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 配置国内Python镜像（解决下载慢/超时）
+        run: |
+          pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+          pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+          export LANG=C.UTF-8
+
+      - name: Git 安全配置
+        run: |
           git config --global --add safe.directory /github/workspace
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.11"}
-      - run: pip install requests -q
-      - env:
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: 'pip'  # 🚀 缓存依赖，下次运行秒启动
+
+      - name: 安装依赖（稳定版）
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 生成咪咕 1080P 源
+        env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
         run: python migu.py
-      - run: python update.py
-      - run: |
+
+      - name: 合并私源 + 电信低码过滤 + 阿克苏IP优化
+        run: python update.py
+
+      - name: 提交推送（彻底解决unstaged冲突）
+        run: |
           git pull origin main --rebase --autostash
           git add *.m3u
-          git commit -m "🔄 自动更新(全阿克苏IP) [skip ci]" || echo "无变更"
+          git commit -m "🔄 自动更新电信直播源 [skip ci]" || echo "无变更，跳过提交"
           git push origin main
