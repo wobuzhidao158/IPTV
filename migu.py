@@ -1,61 +1,48 @@
 import os
-import time
 import requests
+import json
 
-MIGU_UID = os.getenv("MIGU_UID", "")
-MIGU_TOKEN = os.getenv("MIGU_TOKEN", "")
-MAX_RETRY = 3
-RETRY_DELAY = 2
-OUTPUT_PATH = "./migu.m3u"
+# 咪咕密钥（从GitHub Secrets读取）
+MIGU_UID = os.environ.get("MIGU_UID", "")
+MIGU_TOKEN = os.environ.get("MIGU_TOKEN", "")
 
-MIGU_CHANNELS = {
-    "CCTV1综合": "3300",
-    "CCTV2财经": "3301",
-    "CCTV3综艺": "3302",
-    "CCTV4中文国际": "3303",
-    "CCTV5体育": "3304",
-    "CCTV6电影": "3305",
-    "CCTV7军事农业": "3306",
-    "CCTV8电视剧": "3307",
-    "CCTV9纪录": "3308",
-    "CCTV10科教": "3309",
-    "CCTV11戏曲": "3310",
-    "CCTV12社会与法": "3311",
-    "CCTV13新闻": "3312",
-    "CCTV15音乐": "3313",
-    "东方卫视": "3330",
-    "浙江卫视": "3331",
-    "湖南卫视": "3332",
-    "江苏卫视": "3333",
-    "北京卫视": "3334",
-    "广东卫视": "3335",
-    "深圳卫视": "3336"
-}
+# 🔴 核心：强制指定720P码率，拒绝1080P
+QUALITY = "720"  # 可选：540/480，720最稳
+OUTPUT = "./migu.m3u"
 
-def get_migu_url(cid, name):
-    api = "https://api.miguvideo.com/v1.0/live/playurl"
-    headers = {"User-Agent": "Mozilla/5.0", "Referer": "https://tv.miguvideo.com"}
-    params = {"cid": cid, "uid": MIGU_UID, "token": MIGU_TOKEN, "quality": "sh"}
+# 咪咕API（示例，根据你的实际脚本修改，核心是强制720P）
+def get_migu_channels():
+    headers = {
+        "uid": MIGU_UID,
+        "token": MIGU_TOKEN,
+        "User-Agent": "Migu/1.0"
+    }
+    # 这里替换成你实际的咪咕频道接口，核心是在请求中指定quality=720
+    url = f"https://api.migu.tv/channels?quality={QUALITY}"
+    try:
+        r = requests.get(url, headers=headers, timeout=10)
+        return r.json().get("channels", [])
+    except Exception as e:
+        print(f"⚠️ 咪咕API请求失败: {e}")
+        return []
 
-    for _ in range(MAX_RETRY):
-        try:
-            res = requests.get(api, headers=headers, params=params, timeout=15)
-            data = res.json()
-            if data.get("code") == 0 and data["data"].get("url"):
-                return data["data"]["url"]
-        except:
-            pass
-        time.sleep(RETRY_DELAY)
-    return None
+def generate_m3u(channels):
+    m3u = ["#EXTM3U"]
+    for ch in channels:
+        # 强制720P流地址
+        url = ch.get("url_720", "")
+        if not url:
+            continue
+        m3u.append(f'#EXTINF:-1 tvg-name="{ch["name"]}" tvg-id="{ch["id"]}" group-title="咪咕720P"')
+        m3u.append(url)
+    return m3u
 
 if __name__ == "__main__":
-    lines = ["#EXTM3U", "#EXTINF:-1 group-title=\"咪咕1080P\",咪咕1080P高清"]
-    for name, cid in MIGU_CHANNELS.items():
-        url = get_migu_url(cid, name)
-        if url:
-            lines.append(f"#EXTINF:-1 group-title=\"咪咕1080P\",{name}")
-            lines.append(url)
-
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print("✅ migu.m3u 生成完成")
+    if not MIGU_UID or not MIGU_TOKEN:
+        print("❌ 咪咕UID/TOKEN未配置，请检查GitHub Secrets")
+        exit(1)
+    channels = get_migu_channels()
+    m3u = generate_m3u(channels)
+    with open(OUTPUT, "w", encoding="utf-8") as f:
+        f.write("\n".join(m3u))
+    print(f"✅ 咪咕720P源生成完成，共{len(m3u)//2}个频道")
