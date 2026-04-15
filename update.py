@@ -1,100 +1,59 @@
 import os
 import re
-import requests
 import random
 
-# ====================== 配置区（全自动，无需修改）======================
-# 文件路径
+# ==================== 配置 ====================
 PRIVATE = "./private.m3u"
 MIGU_SRC = "./migu.m3u"
 OUTPUT_MAIN = "./output.m3u"
 OUTPUT_4K8K = "./output_4k8k.m3u"
 
-# 阿克苏电信固定IP段（兜底）
-AKESU_FIXED_CIDR = [
-    "110.157.192.0/22", "110.157.196.0/22", "110.157.200.0/21",
-    "110.156.213.0/24", "110.156.223.0/24", "110.156.227.0/24",
-    "36.109.231.0/24"
+# 阿克苏本地线路（保证稳定秒播）
+AKESU_SERVERS = [
+    "http://110.157.192.1:4022",
+    "http://110.157.192.1:5140",
+    "http://36.109.231.253:5146",
+    "http://110.156.223.1:6666"
 ]
 
-# 电信常用udpxy组播转发端口
-UDPXY_PORTS = ["4022", "5140", "5146", "6666", "8080", "8000", "8888"]
-
-# 🔴 核心：黑名单（过滤1080P/高码/4K8K/移动联通，只留720P及以下）
+# 只过滤真正卡的：1080P+/4K/8K/移动/联通，其他一律保留！
 FILTER_KEYWORDS = {
-    "1080P", "1080", "1920", "FHD", "全高清",
-    "4K", "2160", "8K", "4k", "2160p", "8k",
-    "超高码率", "高码", "60fps", "HDR", "杜比",
-    "移动", "CMCC", "移动线路", "联通", "CUCC",
-    "udp://", ":8080", ":8081", ":8090", ":9000",
-    "超清增强", "极致", "蓝光"
+    "1080", "1080P", "FHD",
+    "4K", "8K", "2160", "UHD", "超高清",
+    "移动", "CMCC", "联通", "CUCC"
 }
 
-# 4K/8K专区标记（自动分离）
-UHD_KEYWORDS = {
-    "4K", "4k", "2160", "2160p",
-    "8K", "8k", "超高清", "UHD"
-}
+# 4K/8K 单独抽出来
+UHD_KEYWORDS = {"4K", "8K", "2160", "UHD", "超高清"}
 
-# 白名单：优先保留720P/标清/电信源
-TELECOM_KEYS = {
-    "电信", "CTCC", "天翼", "itv", "iptv",
-    "migu", "720P", "540P", "标清", "高清", "SD"
-}
-
-# ====================== 核心功能区（全自动）======================
-# 1. 自动抓取最新阿克苏电信udpxy服务器
-def fetch_akesu_udpxy():
-    servers = []
-    try:
-        url = "https://ispip.clang.cn/chinatelecom_cidr.html"
-        r = requests.get(url, timeout=10)
-        ips = re.findall(r'(\d+\.\d+\.\d+\.\d+)', r.text)
-        for ip in ips:
-            if ip.startswith(("110.157","110.156","36.109")):
-                for port in UDPXY_PORTS:
-                    servers.append(f"http://{ip}:{port}")
-        servers += [f"http://{ip}:{p}" for ip in ["110.157.192.1","36.109.231.253"] for p in UDPXY_PORTS]
-    except Exception as e:
-        print(f"⚠️ 自动抓取阿克苏IP失败，使用固定兜底IP: {e}")
-        servers = [f"http://{ip}:{p}" for ip in ["110.157.192.1","36.109.231.253"] for p in UDPXY_PORTS]
-    return list(dict.fromkeys(servers))[:20]
-
-AKESU_SERVERS = fetch_akesu_udpxy()
-print(f"📍 已获取阿克苏本地udpxy服务器：{len(AKESU_SERVERS)}个")
-
-# 2. 核心：把任意源转为阿克苏本地线路（秒播不卡顿）
-def to_akesu_local(url):
-    m = re.search(r'(\d+\.\d+\.\d+\.\d+:\d+)', url)
-    if not m:
+# ==================== 核心功能 ====================
+# 转为阿克苏本地线路，保证稳定
+def to_akesu(url):
+    match = re.search(r'(\d+\.\d+\.\d+\.\d+:\d+)', url)
+    if not match:
         return url
-    multi_addr = m.group(1)
-    server = random.choice(AKESU_SERVERS) if AKESU_SERVERS else "http://110.157.192.1:4022"
-    return f"{server}/udp/{multi_addr}"
+    server = random.choice(AKESU_SERVERS)
+    return f"{server}/udp/{match.group(1)}"
 
-# 3. 读取M3U文件（容错处理）
+# 读取m3u
 def read_m3u(path):
     if not os.path.exists(path):
-        print(f"⚠️ 未找到文件: {path}，跳过")
+        print(f"⚠️ 未找到 {path}")
         return []
     with open(path, "r", encoding="utf-8") as f:
-        return [l.strip() for l in f if l.strip() and not l.startswith("#EXTM3U")]
+        return [line.strip() for line in f if line.strip()]
 
-# 4. 分离4K8K和普通频道
-def split_uhd_and_normal(lines):
+# 分离 4K8K 和普通频道
+def split_uhd_normal(lines):
     normal = []
     uhd = []
     i = 0
     total = len(lines)
     while i < total:
         line = lines[i]
-        if line.startswith("#EXTINF"):
-            if i + 1 >= total:
-                normal.append(line)
-                i += 1
-                continue
+        if line.startswith("#EXTINF") and i + 1 < total:
             url = lines[i+1]
-            new_url = to_akesu_local(url)
+            new_url = to_akesu(url)
             if any(k in line for k in UHD_KEYWORDS):
                 uhd.append(line)
                 uhd.append(new_url)
@@ -107,64 +66,73 @@ def split_uhd_and_normal(lines):
             i += 1
     return normal, uhd
 
-# 5. 过滤普通列表：只留720P/标清/电信，过滤1080P/高码/移动联通
-def filter_720p_telecom(lines):
-    result = []
+# 轻柔过滤：只删1080+/移动/联通，不删影视/轮播/港澳台
+def gentle_filter(lines):
+    out = []
     skip_next = False
     for line in lines:
         if skip_next:
             skip_next = False
             continue
-        # 命中黑名单（1080P/高码等），直接跳过
+        # 只删黑名单内容
         if any(k in line for k in FILTER_KEYWORDS):
             skip_next = True
             continue
-        # 链接全部保留，白名单/普通频道不删除
-        if line.startswith("http") or any(t in line for t in TELECOM_KEYS):
-            result.append(line)
-        else:
-            result.append(line)
-    return result
+        out.append(line)
+    return out
 
-# 6. 链接去重
+# 去重
 def deduplicate(lines):
     seen_url = set()
-    final = []
+    out = []
     for line in lines:
         if line.startswith("http"):
             if line in seen_url:
                 continue
             seen_url.add(line)
-        final.append(line)
-    return final
+        out.append(line)
+    return out
 
-# 7. 保存M3U文件
-def save_m3u(path, content):
-    final = ["#EXTM3U"] + content
+# 自动分组（不覆盖原有分组）
+def auto_group(lines, default_group):
+    res = []
+    for line in lines:
+        if line.startswith("#EXTINF") and "group-title=" not in line:
+            line = re.sub(r',(.+)$', f' group-title="{default_group}",\\1', line)
+        res.append(line)
+    return res
+
+# 保存文件
+def save_m3u(path, lines):
     with open(path, "w", encoding="utf-8") as f:
-        f.write("\n".join(final))
+        f.write("#EXTM3U\n" + "\n".join(lines))
 
-# ====================== 主流程（全自动）======================
+# ==================== 主程序 ====================
 if __name__ == "__main__":
-    print("🚀 开始执行直播源自动更新（阿克苏720P稳定版）")
     private = read_m3u(PRIVATE)
     migu = read_m3u(MIGU_SRC)
     all_lines = private + migu
 
-    raw_normal, raw_uhd = split_uhd_and_normal(all_lines)
-    # 🔴 核心：只保留720P及以下，过滤1080P
-    clean_normal = filter_720p_telecom(raw_normal)
-    clean_normal = deduplicate(clean_normal)
-    clean_uhd = deduplicate(raw_uhd)
+    # 分离4K8K
+    normal_lines, uhd_lines = split_uhd_normal(all_lines)
 
-    if len(clean_normal) < 15:
-        print("⚠️ 过滤后普通源过少，回退为原始合并模式")
-        clean_normal = deduplicate(raw_normal)
+    # 轻柔过滤，不删影视/轮播/港澳台
+    normal_lines = gentle_filter(normal_lines)
+    normal_lines = deduplicate(normal_lines)
+    uhd_lines = deduplicate(uhd_lines)
 
-    save_m3u(OUTPUT_MAIN, clean_normal)
-    save_m3u(OUTPUT_4K8K, clean_uhd)
+    # 自动分组
+    normal_lines = auto_group(normal_lines, "电信稳定·720P")
+    uhd_lines = auto_group(uhd_lines, "4K8K专属专区")
 
-    print(f"✅ 更新完成！")
-    print(f"📺 普通电信720P列表：{len(clean_normal)}个频道（阿克苏本地IP，秒播不卡）")
-    print(f"🎬 4K/8K独立专区：{len(clean_uhd)}个频道")
-    print(f"📍 已过滤1080P失败源，仅保留720P稳定源")
+    # 兜底
+    if len(normal_lines) < 10:
+        normal_lines = deduplicate(private + migu)
+
+    save_m3u(OUTPUT_MAIN, normal_lines)
+    save_m3u(OUTPUT_4K8K, uhd_lines)
+
+    print("✅ 最终稳定版生成完成")
+    print(f"📺 普通频道(含影视/轮播/港澳台)：{len(normal_lines)//2} 个")
+    print(f"🎬 4K8K专区：{len(uhd_lines)//2} 个")
+    print("📍 全部走阿克苏本地IP，不再乱删频道")
