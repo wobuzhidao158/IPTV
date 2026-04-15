@@ -1,4 +1,4 @@
-name: 电信专属·直播源自动更新（阿克苏终极稳定版）
+name: 电信专属·直播源自动更新（阿克苏720P终极稳定版）
 
 on:
   schedule:
@@ -41,7 +41,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          # 移除cache: pip，彻底解决requirements.txt缺失报错
           check-latest: false
           update-environment: true
 
@@ -50,7 +49,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: 生成咪咕1080P源
+      - name: 生成咪咕720P稳定源（核心修改）
         env:
           MIGU_UID: ${{ secrets.MIGU_UID }}
           MIGU_TOKEN: ${{ secrets.MIGU_TOKEN }}
@@ -63,5 +62,5 @@ jobs:
         run: |
           git pull origin main --rebase --autostash
           git add *.m3u
-          git commit -m "🔄 自动更新(阿克苏本地IP) [skip ci]" || echo "无变更，跳过提交"
+          git commit -m "🔄 自动更新(阿克苏720P稳定版) [skip ci]" || echo "无变更，跳过提交"
           git push origin main
