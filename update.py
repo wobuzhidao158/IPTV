@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from ipaddress import ip_address, ip_network
+import random
 
 # 文件配置
 PRIVATE = "./private.m3u"
@@ -10,68 +10,60 @@ OUTPUT_MAIN = "./output.m3u"
 OUTPUT_4K8K = "./output_4k8k.m3u"
 
 # 阿克苏电信固定IP段（兜底）
-AKESU_FIXED_CIDR = [
+AKESU_CIDR = [
     "110.157.192.0/22", "110.157.196.0/22", "110.157.200.0/21",
-    "110.156.213.0/24", "110.156.223.0/24", "110.156.227.0/24"
+    "110.156.213.0/24", "110.156.223.0/24", "110.156.227.0/24",
+    "36.109.231.0/24"
 ]
 
-# 常用电信代理端口（组播转发常用）
-AKESU_PORTS = ["8080", "6666", "4022", "5140", "5146", "8000"]
+# 电信常用udpxy端口（组播转发）
+UDPXY_PORTS = ["4022", "5140", "5146", "6666", "8080", "8000", "8888"]
 
 # 过滤规则
-FILTER_KEYWORDS = {"4K","8K","2160","高码","60fps","HDR","杜比","移动","CMCC","联通","CUCC","udp://"}
-UHD_KEYWORDS = {"4K","8K","2160","UHD","超高清"}
-TELECOM_KEYS = {"电信","CTCC","天翼","itv","iptv","migu","1080P","720P"}
+FILTER = {"4K","8K","2160","高码","60fps","HDR","杜比","移动","CMCC","联通","CUCC"}
+UHD = {"4K","8K","2160","UHD","超高清"}
+TELECOM = {"电信","CTCC","天翼","itv","iptv","migu","1080P","720P"}
 
 # ------------------------------
-# 1. 自动获取最新阿克苏电信IP
+# 1. 自动抓取最新阿克苏udpxy服务器
 # ------------------------------
-def fetch_latest_akesu_cidr():
+def fetch_akesu_udpxy():
+    servers = []
     try:
+        # 从公开IP库抓取阿克苏电信IP
         url = "https://ispip.clang.cn/chinatelecom_cidr.html"
         r = requests.get(url, timeout=10)
-        cidrs = re.findall(r'(\d+\.\d+\.\d+\.\d+/\d+)', r.text)
-        akesu = []
-        for c in cidrs:
-            net = ip_network(c, strict=False)
-            if any(net.overlaps(ip_network(fc)) for fc in AKESU_FIXED_CIDR):
-                akesu.append(c)
-        return list(set(akesu + AKESU_FIXED_CIDR))[:8]
+        ips = re.findall(r'(\d+\.\d+\.\d+\.\d+)', r.text)
+        # 筛选阿克苏段
+        for ip in ips:
+            if ip.startswith(("110.157","110.156","36.109")):
+                for port in UDPXY_PORTS:
+                    servers.append(f"http://{ip}:{port}")
+        # 兜底固定服务器
+        servers += [f"http://{ip}:{p}" for ip in ["110.157.192.1","36.109.231.253"] for p in UDPXY_PORTS]
     except:
-        print("⚠️ 自动获取失败，使用固定阿克苏段")
-        return AKESU_FIXED_CIDR[:8]
+        pass
+    # 去重+取前20
+    return list(dict.fromkeys(servers))[:20]
 
-AKESU_NETS = [ip_network(c) for c in fetch_latest_akesu_cidr()]
-
-# ------------------------------
-# 2. 判断IP是否阿克苏电信
-# ------------------------------
-def is_akesu_ip(ip_str):
-    try:
-        ip = ip_address(ip_str)
-        return any(ip in net for net in AKESU_NETS)
-    except:
-        return False
+AKESU_SERVERS = fetch_akesu_udpxy()
+print(f"📍 已获取阿克苏udpxy服务器：{len(AKESU_SERVERS)}个")
 
 # ------------------------------
-# 3. 自动补充阿克苏IP+端口
+# 2. 把任意源转为阿克苏线路（核心！）
 # ------------------------------
-def rewrite_to_akesu(url):
-    match = re.match(r'https?://([^:/]+):?(\d+)?(/.*)?', url)
-    if not match:
+def to_akesu(url):
+    # 提取组播地址（239.x.x.x:端口）
+    m = re.search(r'(\d+\.\d+\.\d+\.\d+:\d+)', url)
+    if not m:
         return url
-    host, port, path = match.groups()
-    if is_akesu_ip(host):
-        return url
-    # 随机选阿克苏IP+端口
-    import random
-    new_ip = random.choice([str net.network_address for net in AKESU_NETS])
-    new_port = random.choice(AKESU_PORTS)
-    new_path = path if path else "/udp/239.3.1.1:5140"
-    return f"http://{new_ip}:{new_port}{new_path}"
+    multi = m.group(1)
+    # 随机选阿克苏服务器
+    server = random.choice(AKESU_SERVERS) if AKESU_SERVERS else "http://110.157.192.1:4022"
+    return f"{server}/udp/{multi}"
 
 # ------------------------------
-# 4. 读取、拆分、过滤、去重
+# 3. 读取、拆分、过滤、去重
 # ------------------------------
 def read_m3u(path):
     if not os.path.exists(path):
@@ -87,12 +79,13 @@ def split_uhd_normal(lines):
         line = lines[i]
         if line.startswith("#EXTINF") and i+1 < n:
             url = lines[i+1]
-            if any(k in line for k in UHD_KEYWORDS):
+            new_url = to_akesu(url)
+            if any(k in line for k in UHD):
                 uhd.append(line)
-                uhd.append(rewrite_to_akesu(url))
+                uhd.append(new_url)
             else:
                 normal.append(line)
-                normal.append(rewrite_to_akesu(url))
+                normal.append(new_url)
             i += 2
         else:
             normal.append(line)
@@ -103,10 +96,10 @@ def filter_list(lines):
     res, skip = [], False
     for line in lines:
         if skip: skip=False; continue
-        if any(k in line for k in FILTER_KEYWORDS):
+        if any(k in line for k in FILTER):
             skip=True
             continue
-        if line.startswith("http") or any(t in line for t in TELECOM_KEYS):
+        if line.startswith("http") or any(t in line for t in TELECOM):
             res.append(line)
         else:
             res.append(line)
@@ -145,6 +138,5 @@ if __name__ == "__main__":
     save(OUTPUT_MAIN, normal)
     save(OUTPUT_4K8K, uhd)
 
-    print(f"✅ 生成完成")
+    print(f"✅ 生成完成（全阿克苏线路）")
     print(f"📺 普通({len(normal)}) | 🎬 4K8K({len(uhd)})")
-    print(f"📍 已强制优先阿克苏电信IP")
