@@ -1,21 +1,79 @@
 #EXTM3U
-#EXTINF:-1 tvg-id="RedBullTV.at@SD" group-title="电信稳定·720P",Red Bull TV SD (720p)
-https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8
-#EXTINF:-1 tvg-id="BreadTV.cn@SD" group-title="电信稳定·720P",Bread TV面包台 (720p)
-https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
-#EXTINF:-1 tvg-id="XizangTVTibetan.cn@SD" group-title="电信稳定·720P",Xizang TV Tibetan (720p) [Not 24/7]
-http://php.jdshipin.com:8880/xztv.php?id=zy
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞3新商都 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXshangyu3/720p.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞1新闻综合 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞經濟文化 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXshangyu2/720p.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",浙江 Ⅰ 绍兴影视 (720p)
-http://live.shaoxing.com.cn/video/s10001-sxtv3/index.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",嵊州综合 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXshengzhou1/720p.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",蕭山生活頻道 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXxiaoshan2/720p.m3u8
-#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",萧山新闻综合 (720p) [Not 24/7]
-https://l.cztvcloud.com/channels/lantian/SXxiaoshan1/720p.m3u8
+#EXTINF:-1 group-title="央视720P",CCTV1综合
+http://103.236.87.67:3000/608807420
+#EXTINF:-1 group-title="央视720P",CCTV2财经
+http://103.236.87.67:3000/631780532
+#EXTINF:-1 group-title="央视720P",CCTV3综艺
+http://103.236.87.67:3000/624878271
+#EXTINF:-1 group-title="央视720P",CCTV4中文国际
+http://103.236.87.67:3000/631780421
+#EXTINF:-1 group-title="央视720P",CCTV5体育
+http://103.236.87.67:3000/641886683
+#EXTINF:-1 group-title="央视720P",CCTV5+体育赛事
+http://103.236.87.67:3000/641886773
+#EXTINF:-1 group-title="央视720P",CCTV6电影
+http://103.236.87.67:3000/624878396
+#EXTINF:-1 group-title="央视720P",CCTV7国防军事
+http://103.236.87.67:3000/673168121
+#EXTINF:-1 group-title="央视720P",CCTV8电视剧
+http://103.236.87.67:3000/624878356
+#EXTINF:-1 group-title="央视720P",CCTV9纪录
+http://103.236.87.67:3000/673168140
+#EXTINF:-1 group-title="央视720P",CCTV10科教
+http://103.236.87.67:3000/624878405
+#EXTINF:-1 group-title="央视720P",CCTV11戏曲
+http://103.236.87.67:3000/667987558
+#EXTINF:-1 group-title="央视720P",CCTV12社会与法
+http://103.236.87.67:3000/673168185
+#EXTINF:-1 group-title="央视720P",CCTV13新闻
+http://103.236.87.67:3000/608807423
+#EXTINF:-1 group-title="央视720P",CCTV14少儿
+http://103.236.87.67:3000/624878440
+#EXTINF:-1 group-title="央视720P",CCTV15音乐
+http://103.236.87.67:3000/673168223
+#EXTINF:-1 group-title="央视720P",CCTV17农业农村
+http://103.236.87.67:3000/673168256
+#EXTINF:-1 group-title="卫视720P",东方卫视
+http://103.236.87.67:3000/651632648
+#EXTINF:-1 group-title="卫视720P",江苏卫视
+http://103.236.87.67:3000/623899368
+#EXTINF:-1 group-title="卫视720P",广东卫视
+http://103.236.87.67:3000/608831231
+#EXTINF:-1 group-title="卫视720P",北京卫视
+http://103.236.87.67:3000/630287636
+#EXTINF:-1 group-title="卫视720P",辽宁卫视
+http://103.236.87.67:3000/630291707
+#EXTINF:-1 group-title="卫视720P",陕西卫视
+http://103.236.87.67:3000/738910838
+#EXTINF:-1 group-title="卫视720P",重庆卫视
+http://103.236.87.67:3000/738910914
+#EXTINF:-1 group-title="卫视720P",兵团卫视
+http://103.236.87.67:3000/956923145
+#EXTINF:-1 group-title="影视轮播720P",经典香港电影
+http://103.236.87.67:3000/625703337
+#EXTINF:-1 group-title="影视轮播720P",抗战经典影片
+http://103.236.87.67:3000/617432318
+#EXTINF:-1 group-title="影视轮播720P",新片放映厅
+http://103.236.87.67:3000/619495952
+#EXTINF:-1 group-title="影视轮播720P",CHC影迷电影
+http://103.236.87.67:3000/952383261
+#EXTINF:-1 group-title="影视轮播720P",和美乡途轮播台
+http://103.236.87.67:3000/713591450
+#EXTINF:-1 group-title="影视轮播720P",南方影视
+http://103.236.87.67:3000/614961829
+#EXTINF:-1 group-title="数字频道720P",老故事
+http://103.236.87.67:3000/884121956
+#EXTINF:-1 group-title="数字频道720P",发现之旅
+http://103.236.87.67:3000/624878970
+#EXTINF:-1 group-title="数字频道720P",四海钓鱼
+http://103.236.87.67:3000/637444975
+#EXTINF:-1 group-title="数字频道720P",快乐垂钓
+http://103.236.87.67:3000/961930263
+#EXTINF:-1 group-title="数字频道720P",中国天气
+http://103.236.87.67:3000/959986621
+#EXTINF:-1 group-title="数字频道720P",CETV1
+http://103.236.87.67:3000/923287154
+#EXTINF:-1 group-title="数字频道720P",CETV2
+http://103.236.87.67:3000/923287211
+#EXTINF:-1 group-title="数字频道720P",CETV4
+http://103.236.87.67:3000/923287339
