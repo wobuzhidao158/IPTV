@@ -1,5 +1,6 @@
 #EXTM3U
 #EXTINF:-1 group-title="央视720P",CCTV1综合
+<<<<<<< Updated upstream
 http://36.109.231.253:5146/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV2财经
 http://110.156.223.1:6666/udp/103.236.87.67:3000
@@ -9,6 +10,17 @@ http://110.157.192.1:5140/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV5体育
 http://110.157.192.1:4022/udp/103.236.87.67:3000
 #EXTINF:-1 group-title="央视720P",CCTV5+体育赛事
+=======
+http://110.157.192.1:5140/udp/103.236.87.67:3000
+#EXTINF:-1 group-title="央视720P",CCTV2财经
+http://110.157.192.1:4022/udp/103.236.87.67:3000
+#EXTINF:-1 group-title="央视720P",CCTV3综艺
+http://36.109.231.253:5146/udp/103.236.87.67:3000
+#EXTINF:-1 group-title="央视720P",CCTV4中文国际
+#EXTINF:-1 group-title="央视720P",CCTV5体育
+#EXTINF:-1 group-title="央视720P",CCTV5+体育赛事
+http://110.156.223.1:6666/udp/103.236.87.67:3000
+>>>>>>> Stashed changes
 #EXTINF:-1 group-title="央视720P",CCTV6电影
 #EXTINF:-1 group-title="央视720P",CCTV7国防军事
 #EXTINF:-1 group-title="央视720P",CCTV8电视剧
