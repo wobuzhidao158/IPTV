@@ -42,13 +42,13 @@ jobs:
           python -m pip install --upgrade pip || true
           pip install requests || true
         continue-on-error: true
-      - name: 合并+源检测+自动补新+阿克苏IP
+      - name: 合并+阿克苏IP+100%保留所有源
         run: python update.py
         continue-on-error: true
-      - name: 强制提交所有m3u文件（修复空文件问题）
+      - name: 强制提交
         run: |
           git pull origin main --rebase --autostash || true
-          git add -f *.m3u  # 🔴 强制添加所有m3u文件，包括iptv.m3u
+          git add -f *.m3u
           git commit -m "🔄 自动更新iptv.m3u [skip ci]" || true
-          git push origin main --force || true  # 🔴 强制推送，确保文件更新
+          git push origin main --force || true
         continue-on-error: true
