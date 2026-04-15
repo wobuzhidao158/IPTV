@@ -2,12 +2,11 @@ import os
 import re
 import random
 import requests
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ==================== 核心配置（已修复文件名）====================
+# ==================== 核心配置 ====================
 PRIVATE = "./private.m3u"
 MIGU_SRC = "./migu.m3u"
-OUTPUT_MAIN = "./iptv.m3u"  # 🔴 改为你访问的iptv.m3u
+OUTPUT_MAIN = "./iptv.m3u"
 OUTPUT_4K8K = "./output_4k8k.m3u"
 
 # 阿克苏本地服务器（稳定秒播）
@@ -28,12 +27,8 @@ FILTER_KEYWORDS = {
 # 4K/8K专区标记
 UHD_KEYWORDS = {"4K", "8K", "2160", "UHD", "超高清"}
 
-# 源有效性检测超时（秒）
-CHECK_TIMEOUT = 3
-# 最大并发检测数
-MAX_WORKERS = 10
-
 # ==================== 全容错核心功能 ====================
+# 转为阿克苏本地IP
 def to_akesu(url):
     try:
         match = re.search(r'(\d+\.\d+\.\d+\.\d+:\d+)', url)
@@ -44,49 +39,7 @@ def to_akesu(url):
     except:
         return url
 
-def check_url_valid(url):
-    try:
-        response = requests.head(url, timeout=CHECK_TIMEOUT, allow_redirects=True)
-        return url if response.status_code < 400 else None
-    except:
-        return None
-
-def filter_valid_urls(lines):
-    try:
-        url_map = {}
-        temp_lines = []
-        i = 0
-        while i < len(lines):
-            if lines[i].startswith("#EXTINF") and i+1 < len(lines):
-                info = lines[i]
-                url = lines[i+1]
-                url_map[url] = info
-                temp_lines.append(url)
-                i += 2
-            else:
-                temp_lines.append(lines[i])
-                i += 1
-
-        valid_urls = []
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            future_to_url = {executor.submit(check_url_valid, url): url for url in temp_lines if url.startswith("http")}
-            for future in as_completed(future_to_url):
-                try:
-                    res = future.result()
-                    if res:
-                        valid_urls.append(res)
-                except:
-                    pass
-
-        result = []
-        for url in valid_urls:
-            if url in url_map:
-                result.append(url_map[url])
-                result.append(url)
-        return result
-    except:
-        return lines
-
+# 自动补新720P源（放在最后，不覆盖你的源）
 def fetch_new_720p_sources():
     new_sources = []
     try:
@@ -119,6 +72,7 @@ def fetch_new_720p_sources():
         pass
     return new_sources
 
+# 读取m3u（100%保留所有内容）
 def read_m3u(path):
     try:
         if not os.path.exists(path):
@@ -128,6 +82,7 @@ def read_m3u(path):
     except:
         return []
 
+# 分离4K8K和普通频道
 def split_uhd_normal(lines):
     try:
         normal = []
@@ -153,6 +108,7 @@ def split_uhd_normal(lines):
     except:
         return lines, []
 
+# 轻柔过滤，不删影视/轮播/港澳台
 def gentle_filter(lines):
     try:
         out = []
@@ -169,6 +125,7 @@ def gentle_filter(lines):
     except:
         return lines
 
+# 去重（只去重完全相同的链接）
 def deduplicate(lines):
     try:
         seen_url = set()
@@ -183,6 +140,7 @@ def deduplicate(lines):
     except:
         return lines
 
+# 自动分组（不覆盖原有分组）
 def auto_group(lines, default_group):
     try:
         res = []
@@ -194,6 +152,7 @@ def auto_group(lines, default_group):
     except:
         return lines
 
+# 保存文件
 def save_m3u(path, lines):
     try:
         with open(path, "w", encoding="utf-8") as f:
@@ -201,34 +160,36 @@ def save_m3u(path, lines):
     except:
         pass
 
-# ==================== 主程序（新增非空兜底）====================
+# ==================== 主程序（100%保留你的所有源）====================
 if __name__ == "__main__":
     try:
-        print("🚀 开始执行直播源自动更新（零报错终极版）")
+        print("🚀 开始执行直播源自动更新（最终修复版·100%保留所有源）")
         
+        # 🔴 核心：先读你的私源和咪咕源，100%保留
         private = read_m3u(PRIVATE)
         migu = read_m3u(MIGU_SRC)
         all_lines = private + migu
 
+        # 分离4K8K
         normal_lines, uhd_lines = split_uhd_normal(all_lines)
+        # 轻柔过滤，只删1080P/移动联通
         normal_lines = gentle_filter(normal_lines)
-        normal_lines = filter_valid_urls(normal_lines)
-        uhd_lines = filter_valid_urls(uhd_lines)
 
-        if len(normal_lines) < 30:
+        # 🔴 自动补新的源放在最后，不覆盖你的源
+        if len(normal_lines) < 50:
             new_sources = fetch_new_720p_sources()
             normal_lines.extend(new_sources)
             normal_lines = gentle_filter(normal_lines)
-            normal_lines = filter_valid_urls(normal_lines)
 
+        # 去重+自动分组
         normal_lines = deduplicate(normal_lines)
         normal_lines = auto_group(normal_lines, "电信稳定·720P")
         uhd_lines = deduplicate(uhd_lines)
         uhd_lines = auto_group(uhd_lines, "4K8K专属专区")
 
-        # 🔴 终极非空兜底：如果还是空，直接写入保底频道
+        # 🔴 终极非空兜底：如果还是空，直接写入你之前的咪咕源
         if len(normal_lines) < 10:
-            print("⚠️ 源过少，使用保底频道")
+            print("⚠️ 源过少，使用你之前的咪咕保底源")
             normal_lines = [
                 "#EXTINF:-1 group-title=\"央视720P\",CCTV1综合",
                 "http://103.236.87.67:3000/608807420",
@@ -239,30 +200,29 @@ if __name__ == "__main__":
                 "#EXTINF:-1 group-title=\"央视720P\",CCTV4中文国际",
                 "http://103.236.87.67:3000/631780421",
                 "#EXTINF:-1 group-title=\"央视720P\",CCTV5体育",
-                "http://103.236.87.67:3000/641886683"
+                "http://103.236.87.67:3000/641886683",
+                "#EXTINF:-1 group-title=\"央视720P\",CCTV6电影",
+                "http://103.236.87.67:3000/624878396",
+                "#EXTINF:-1 group-title=\"央视720P\",CCTV7国防军事",
+                "http://103.236.87.67:3000/673168121",
+                "#EXTINF:-1 group-title=\"央视720P\",CCTV8电视剧",
+                "http://103.236.87.67:3000/624878356"
             ]
 
         save_m3u(OUTPUT_MAIN, normal_lines)
         save_m3u(OUTPUT_4K8K, uhd_lines)
 
         print(f"✅ 更新完成！")
-        print(f"📺 iptv.m3u 主列表：{len(normal_lines)//2} 个有效源")
-        print(f"🎬 4K8K专区：{len(uhd_lines)//2} 个有效源")
+        print(f"📺 你的私源：{len(private)//2} 个（100%保留）")
+        print(f"📺 你的咪咕源：{len(migu)//2} 个（100%保留）")
+        print(f"📺 自动补新：{len(new_sources)//2} 个（放在最后）")
+        print(f"📺 总频道数：{len(normal_lines)//2} 个")
     except Exception as e:
-        print(f"⚠️ 出现小问题，使用保底源: {e}")
-        # 终极兜底：直接写入保底频道
-        normal_lines = [
-            "#EXTINF:-1 group-title=\"央视720P\",CCTV1综合",
-            "http://103.236.87.67:3000/608807420",
-            "#EXTINF:-1 group-title=\"央视720P\",CCTV2财经",
-            "http://103.236.87.67:3000/631780532",
-            "#EXTINF:-1 group-title=\"央视720P\",CCTV3综艺",
-            "http://103.236.87.67:3000/624878271",
-            "#EXTINF:-1 group-title=\"央视720P\",CCTV4中文国际",
-            "http://103.236.87.67:3000/631780421",
-            "#EXTINF:-1 group-title=\"央视720P\",CCTV5体育",
-            "http://103.236.87.67:3000/641886683"
-        ]
-        save_m3u(OUTPUT_MAIN, normal_lines)
+        print(f"⚠️ 出现小问题，直接输出你的原始源: {e}")
+        # 终极兜底：直接输出你自己的私源+咪咕源，绝对不删
+        private = read_m3u(PRIVATE)
+        migu = read_m3u(MIGU_SRC)
+        all_lines = private + migu
+        save_m3u(OUTPUT_MAIN, all_lines)
         save_m3u(OUTPUT_4K8K, [])
-        print(f"✅ 兜底完成，iptv.m3u 共 {len(normal_lines)//2} 个频道")
+        print(f"✅ 兜底完成，共 {len(all_lines)//2} 个频道（全部是你自己的源）")
