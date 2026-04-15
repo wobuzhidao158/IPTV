@@ -1,82 +1,69 @@
 #EXTM3U
-#EXTINF:-1 group-title="央视720P",CCTV1综合
-http://103.236.87.67:3000/608807420
-#EXTINF:-1 group-title="央视720P",CCTV2财经
-http://103.236.87.67:3000/631780532
-#EXTINF:-1 group-title="央视720P",CCTV3综艺
-http://103.236.87.67:3000/624878271
-#EXTINF:-1 group-title="央视720P",CCTV4中文国际
-http://103.236.87.67:3000/631780421
-#EXTINF:-1 group-title="央视720P",CCTV5体育
-http://103.236.87.67:3000/641886683
-#EXTINF:-1 group-title="央视720P",CCTV5+体育赛事
-http://103.236.87.67:3000/641886773
-#EXTINF:-1 group-title="央视720P",CCTV6电影
-http://103.236.87.67:3000/624878396
-#EXTINF:-1 group-title="央视720P",CCTV7国防军事
-http://103.236.87.67:3000/673168121
-#EXTINF:-1 group-title="央视720P",CCTV8电视剧
-http://103.236.87.67:3000/624878356
-#EXTINF:-1 group-title="央视720P",CCTV9纪录
-http://103.236.87.67:3000/673168140
-#EXTINF:-1 group-title="央视720P",CCTV10科教
-http://103.236.87.67:3000/624878405
-#EXTINF:-1 group-title="央视720P",CCTV11戏曲
-http://103.236.87.67:3000/667987558
-#EXTINF:-1 group-title="央视720P",CCTV12社会与法
-http://103.236.87.67:3000/673168185
-#EXTINF:-1 group-title="央视720P",CCTV13新闻
-http://103.236.87.67:3000/608807423
-#EXTINF:-1 group-title="央视720P",CCTV14少儿
-http://103.236.87.67:3000/624878440
-#EXTINF:-1 group-title="央视720P",CCTV15音乐
-http://103.236.87.67:3000/673168223
-#EXTINF:-1 group-title="央视720P",CCTV17农业农村
-http://103.236.87.67:3000/673168256
-
-#EXTINF:-1 group-title="卫视720P",东方卫视
-http://103.236.87.67:3000/651632648
-#EXTINF:-1 group-title="卫视720P",江苏卫视
-http://103.236.87.67:3000/623899368
-#EXTINF:-1 group-title="卫视720P",广东卫视
-http://103.236.87.67:3000/608831231
-#EXTINF:-1 group-title="卫视720P",北京卫视
-http://103.236.87.67:3000/630287636
-#EXTINF:-1 group-title="卫视720P",辽宁卫视
-http://103.236.87.67:3000/630291707
-#EXTINF:-1 group-title="卫视720P",陕西卫视
-http://103.236.87.67:3000/738910838
-#EXTINF:-1 group-title="卫视720P",重庆卫视
-http://103.236.87.67:3000/738910914
-#EXTINF:-1 group-title="卫视720P",兵团卫视
-http://103.236.87.67:3000/956923145
-
-#EXTINF:-1 group-title="影视轮播720P",经典香港电影
-http://103.236.87.67:3000/625703337
-#EXTINF:-1 group-title="影视轮播720P",抗战经典影片
-http://103.236.87.67:3000/617432318
-#EXTINF:-1 group-title="影视轮播720P",新片放映厅
-http://103.236.87.67:3000/619495952
-#EXTINF:-1 group-title="影视轮播720P",CHC影迷电影
-http://103.236.87.67:3000/952383261
-#EXTINF:-1 group-title="影视轮播720P",和美乡途轮播台
-http://103.236.87.67:3000/713591450
-#EXTINF:-1 group-title="影视轮播720P",南方影视
-http://103.236.87.67:3000/614961829
-
-#EXTINF:-1 group-title="数字频道720P",老故事
-http://103.236.87.67:3000/884121956
-#EXTINF:-1 group-title="数字频道720P",发现之旅
-http://103.236.87.67:3000/624878970
-#EXTINF:-1 group-title="数字频道720P",四海钓鱼
-http://103.236.87.67:3000/637444975
-#EXTINF:-1 group-title="数字频道720P",快乐垂钓
-http://103.236.87.67:3000/961930263
-#EXTINF:-1 group-title="数字频道720P",中国天气
-http://103.236.87.67:3000/959986621
-#EXTINF:-1 group-title="数字频道720P",CETV1
-http://103.236.87.67:3000/923287154
-#EXTINF:-1 group-title="数字频道720P",CETV2
-http://103.236.87.67:3000/923287211
-#EXTINF:-1 group-title="数字频道720P",CETV4
-http://103.236.87.67:3000/923287339
+#EXTINF:-1 tvg-id="CCTV1" tvg-name="CCTV-1 综合" group-title="咪咕·720P稳定",CCTV-1 综合(720P)
+http://110.157.192.1:5140/udp/239.14.231.171:4022
+#EXTINF:-1 tvg-id="CCTV2" tvg-name="CCTV-2 财经" group-title="咪咕·720P稳定",CCTV-2 财经(720P)
+http://110.157.192.1:5140/udp/239.2.136.145:8080
+#EXTINF:-1 tvg-id="CCTV3" tvg-name="CCTV-3 综艺" group-title="咪咕·720P稳定",CCTV-3 综艺(720P)
+http://110.157.192.1:5140/udp/239.11.252.121:5146
+#EXTINF:-1 tvg-id="CCTV4" tvg-name="CCTV-4 中文国际" group-title="咪咕·720P稳定",CCTV-4 中文国际(720P)
+http://36.109.231.253:5146/udp/239.9.166.184:5146
+#EXTINF:-1 tvg-id="CCTV5" tvg-name="CCTV-5 体育" group-title="咪咕·720P稳定",CCTV-5 体育(720P)
+http://36.109.231.253:5146/udp/239.14.48.83:4022
+#EXTINF:-1 tvg-id="CCTV5+" tvg-name="CCTV-5+ 体育赛事" group-title="咪咕·720P稳定",CCTV-5+ 体育赛事(720P)
+http://36.109.231.253:5146/udp/239.12.119.161:4022
+#EXTINF:-1 tvg-id="CCTV6" tvg-name="CCTV-6 电影" group-title="咪咕·720P稳定",CCTV-6 电影(720P)
+http://36.109.231.253:5146/udp/239.16.43.1:5140
+#EXTINF:-1 tvg-id="CCTV7" tvg-name="CCTV-7 国防军事" group-title="咪咕·720P稳定",CCTV-7 国防军事(720P)
+http://36.109.231.253:5146/udp/239.11.45.165:5146
+#EXTINF:-1 tvg-id="CCTV8" tvg-name="CCTV-8 电视剧" group-title="咪咕·720P稳定",CCTV-8 电视剧(720P)
+http://110.157.192.1:5140/udp/239.11.114.35:5146
+#EXTINF:-1 tvg-id="CCTV9" tvg-name="CCTV-9 纪录" group-title="咪咕·720P稳定",CCTV-9 纪录(720P)
+http://110.157.192.1:4022/udp/239.17.58.136:5146
+#EXTINF:-1 tvg-id="CCTV10" tvg-name="CCTV-10 科教" group-title="咪咕·720P稳定",CCTV-10 科教(720P)
+http://36.109.231.253:5146/udp/239.3.224.155:5146
+#EXTINF:-1 tvg-id="CCTV11" tvg-name="CCTV-11 戏曲" group-title="咪咕·720P稳定",CCTV-11 戏曲(720P)
+http://110.157.192.1:4022/udp/239.18.2.186:5140
+#EXTINF:-1 tvg-id="CCTV12" tvg-name="CCTV-12 社会与法" group-title="咪咕·720P稳定",CCTV-12 社会与法(720P)
+http://110.157.192.1:5140/udp/239.2.198.177:5146
+#EXTINF:-1 tvg-id="CCTV13" tvg-name="CCTV-13 新闻" group-title="咪咕·720P稳定",CCTV-13 新闻(720P)
+http://36.109.231.253:5146/udp/239.12.238.138:8080
+#EXTINF:-1 tvg-id="CCTV14" tvg-name="CCTV-14 少儿" group-title="咪咕·720P稳定",CCTV-14 少儿(720P)
+http://36.109.231.253:5146/udp/239.2.125.170:5140
+#EXTINF:-1 tvg-id="CCTV15" tvg-name="CCTV-15 音乐" group-title="咪咕·720P稳定",CCTV-15 音乐(720P)
+http://110.157.192.1:5140/udp/239.1.193.192:4022
+#EXTINF:-1 tvg-id="CCTV16" tvg-name="CCTV-16 奥林匹克" group-title="咪咕·720P稳定",CCTV-16 奥林匹克(720P)
+http://110.157.192.1:4022/udp/239.1.244.166:4022
+#EXTINF:-1 tvg-id="CCTV17" tvg-name="CCTV-17 农业农村" group-title="咪咕·720P稳定",CCTV-17 农业农村(720P)
+http://110.157.192.1:4022/udp/239.3.180.223:5146
+#EXTINF:-1 tvg-id="Phoenix_CN" tvg-name="凤凰卫视中文台" group-title="咪咕·720P稳定",凤凰卫视中文台(720P)
+http://110.157.192.1:4022/udp/239.8.135.64:5146
+#EXTINF:-1 tvg-id="Phoenix_News" tvg-name="凤凰卫视资讯台" group-title="咪咕·720P稳定",凤凰卫视资讯台(720P)
+http://110.157.192.1:4022/udp/239.5.168.138:5146
+#EXTINF:-1 tvg-id="TVB_Jade" tvg-name="TVB翡翠台" group-title="咪咕·720P稳定",TVB翡翠台(720P)
+http://110.157.192.1:4022/udp/239.3.115.30:8080
+#EXTINF:-1 tvg-id="TVB_Pretty" tvg-name="TVB明珠台" group-title="咪咕·720P稳定",TVB明珠台(720P)
+http://110.157.192.1:5140/udp/239.4.35.169:8080
+#EXTINF:-1 tvg-id="ETTV_News" tvg-name="东森新闻" group-title="咪咕·720P稳定",东森新闻(720P)
+http://36.109.231.253:5146/udp/239.9.61.119:4022
+#EXTINF:-1 tvg-id="ETTV_Comp" tvg-name="东森综合" group-title="咪咕·720P稳定",东森综合(720P)
+http://110.157.192.1:5140/udp/239.4.161.184:4022
+#EXTINF:-1 tvg-id="CTi_Comp" tvg-name="中天综合" group-title="咪咕·720P稳定",中天综合(720P)
+http://110.157.192.1:4022/udp/239.17.251.2:5146
+#EXTINF:-1 tvg-id="CTi_News" tvg-name="中天新闻" group-title="咪咕·720P稳定",中天新闻(720P)
+http://110.157.192.1:4022/udp/239.5.199.203:5146
+#EXTINF:-1 tvg-id="CTS" tvg-name="华视" group-title="咪咕·720P稳定",华视(720P)
+http://110.157.192.1:4022/udp/239.8.9.192:4022
+#EXTINF:-1 tvg-id="PTS" tvg-name="公视" group-title="咪咕·720P稳定",公视(720P)
+http://36.109.231.253:5146/udp/239.2.142.126:5140
+#EXTINF:-1 tvg-id="FTV" tvg-name="民视" group-title="咪咕·720P稳定",民视(720P)
+http://110.157.192.1:5140/udp/239.9.212.207:4022
+#EXTINF:-1 tvg-id="DaAi" tvg-name="大爱电视台" group-title="咪咕·720P稳定",大爱电视台(720P)
+http://36.109.231.253:5146/udp/239.9.73.175:5146
+#EXTINF:-1 tvg-id="Movie_Cinema" tvg-name="电影院线·720P" group-title="咪咕·720P稳定",电影院线·720P(720P)
+http://110.157.192.1:4022/udp/239.9.130.210:5146
+#EXTINF:-1 tvg-id="Movie_Drama" tvg-name="热播剧场·720P" group-title="咪咕·720P稳定",热播剧场·720P(720P)
+http://110.157.192.1:4022/udp/239.11.150.56:4022
+#EXTINF:-1 tvg-id="Anime_Run" tvg-name="动漫轮播·720P" group-title="咪咕·720P稳定",动漫轮播·720P(720P)
+http://110.157.192.1:5140/udp/239.6.86.222:5146
+#EXTINF:-1 tvg-id="Variety_Run" tvg-name="综艺轮播·720P" group-title="咪咕·720P稳定",综艺轮播·720P(720P)
+http://36.109.231.253:5146/udp/239.19.24.39:8080
