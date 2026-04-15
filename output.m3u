@@ -1,5 +1,6 @@
 #EXTM3U
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #EXTM3U
 #EXTINF:-1 tvg-id="CCTV1" tvg-name="CCTV-1 综合" group-title="咪咕·720P稳定",CCTV-1 综合(720P)
 http://110.156.223.1:6666/udp/110.157.192.1:5140
@@ -47,18 +48,26 @@ http://36.109.231.253:5146/udp/36.109.231.253:5146
 http://36.109.231.253:5146/udp/110.157.192.1:5140
 #EXTINF:-1 tvg-id="Variety_Run" tvg-name="综艺轮播·720P" group-title="咪咕·720P稳定",综艺轮播·720P(720P)
 =======
+=======
+>>>>>>> Stashed changes
 #EXTINF:-1 tvg-id="RedBullTV.at@SD" group-title="电信稳定·720P",Red Bull TV SD (720p)
 https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8
 #EXTINF:-1 tvg-id="BreadTV.cn@SD" group-title="电信稳定·720P",Bread TV面包台 (720p)
 https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+<<<<<<< Updated upstream
 #EXTINF:-1 tvg-id="XizangTVTibetan.cn@SD" group-title="电信稳定·720P",Xizang TV Tibetan (720p) [Not 24/7]
 http://php.jdshipin.com:8880/xztv.php?id=zy
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",浙江 Ⅰ 绍兴影视 (720p)
 http://live.shaoxing.com.cn/video/s10001-sxtv3/index.m3u8
+=======
+#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞3新商都 (720p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXshangyu3/720p.m3u8
+>>>>>>> Stashed changes
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",嵊州综合 (720p) [Not 24/7]
 https://l.cztvcloud.com/channels/lantian/SXshengzhou1/720p.m3u8
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞經濟文化 (720p) [Not 24/7]
 https://l.cztvcloud.com/channels/lantian/SXshangyu2/720p.m3u8
+<<<<<<< Updated upstream
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",萧山新闻综合 (720p) [Not 24/7]
 https://l.cztvcloud.com/channels/lantian/SXxiaoshan1/720p.m3u8
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞1新闻综合 (720p) [Not 24/7]
@@ -67,4 +76,16 @@ https://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
 https://l.cztvcloud.com/channels/lantian/SXshangyu3/720p.m3u8
 #EXTINF:-1 tvg-id="" group-title="电信稳定·720P",蕭山生活頻道 (720p) [Not 24/7]
 https://l.cztvcloud.com/channels/lantian/SXxiaoshan2/720p.m3u8
+>>>>>>> Stashed changes
+=======
+#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",上虞1新闻综合 (720p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
+#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",浙江 Ⅰ 绍兴影视 (720p)
+http://live.shaoxing.com.cn/video/s10001-sxtv3/index.m3u8
+#EXTINF:-1 tvg-id="XizangTVTibetan.cn@SD" group-title="电信稳定·720P",Xizang TV Tibetan (720p) [Not 24/7]
+http://php.jdshipin.com:8880/xztv.php?id=zy
+#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",蕭山生活頻道 (720p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXxiaoshan2/720p.m3u8
+#EXTINF:-1 tvg-id="" group-title="电信稳定·720P",萧山新闻综合 (720p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXxiaoshan1/720p.m3u8
 >>>>>>> Stashed changes
