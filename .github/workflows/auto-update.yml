@@ -19,7 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,6 +47,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests
+
+      - name: 抓取公开直播源（生成 migu.m3u）
+        run: python fetch_migu.py
 
       - name: 合并源 + 阿克苏线路优化 + 分类 + 去重 + 删失效
         run: python update.py
