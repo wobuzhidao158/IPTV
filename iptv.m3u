@@ -1,1 +1,45 @@
 #EXTM3U
+#EXTINF:-1 group-title="央视频道",CCTV-13 (1080p)
+https://cdn3.163189.xyz/163189/cctv13
+#EXTINF:-1 group-title="央视频道",CGTN (1080p)
+https://amg00405-rakutentv-cgtn-rakuten-i9tar.amagi.tv/master.m3u8
+#EXTINF:-1 group-title="央视频道",CGTN (1080p)
+https://english-livebkali.cgtn.com/live/encgtn.m3u8
+#EXTINF:-1 group-title="央视频道",CGTN Documentary (1080p)
+https://amg00405-rakutentv-cgtndocumentary-rakuten-0ql8j.amagi.tv/master.m3u8
+#EXTINF:-1 group-title="其他频道",Tonghua TV (1080p)
+http://lsfb.avap.jilintv.cn/zqvk7vpj/channel/43ea5771aa44421591f9dfd2b71f1b9b/index.m3u8
+#EXTINF:-1 group-title="其他频道",Tonghua TV (1080p)
+https://lsfb.avap.jilintv.cn/zqvk7vpj/channel/43ea5771aa44421591f9dfd2b71f1b9b/index.m3u8
+#EXTINF:-1 group-title="其他频道",VOA美国之音 (1080p)
+https://voa-ingest.akamaized.net/hls/live/2033878/tvmc08/playlist.m3u8
+#EXTINF:-1 group-title="地方频道",南阳新闻 (1080p) [Not 24/7]
+http://30539.hlsplay.aodianyun.com/lms_30539/tv_channel_142.m3u8
+#EXTINF:-1 group-title="地方频道",南陽公共頻道 (1080p) [Not 24/7]
+http://30539.hlsplay.aodianyun.com/lms_30539/tv_channel_295.m3u8
+#EXTINF:-1 group-title="其他频道",南陽科教頻道 (1080p) [Not 24/7]
+http://30539.hlsplay.aodianyun.com/lms_30539/tv_channel_296.m3u8
+#EXTINF:-1 group-title="地方频道",宿州公共 (1080p) [Not 24/7]
+http://live.ahsz.tv/video/s10001-ggpd/index.m3u8
+#EXTINF:-1 group-title="地方频道",宿州新闻综合 (1080p) [Not 24/7]
+http://live.ahsz.tv/video/s10001-szzh/index.m3u8
+#EXTINF:-1 group-title="其他频道",宿州科教 (1080p) [Not 24/7]
+http://live.ahsz.tv/video/s10001-kxjy/index.m3u8
+#EXTINF:-1 group-title="其他频道",山东体育 (1080p) [Geo-blocked]
+http://livealone302.iqilu.com/iqilu/typd.m3u8
+#EXTINF:-1 group-title="地方频道",山东新闻 (1080p) [Geo-blocked]
+http://livealone302.iqilu.com/iqilu/ggpd.m3u8
+#EXTINF:-1 group-title="地方频道",山东生活 (1080p) [Geo-blocked]
+http://livealone302.iqilu.com/iqilu/shpd.m3u8
+#EXTINF:-1 group-title="其他频道",山东齐鲁 (1080p) [Geo-blocked]
+http://livealone302.iqilu.com/iqilu/qlpd.m3u8
+#EXTINF:-1 group-title="影视频道",新昌休闲影视 (1080p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8
+#EXTINF:-1 group-title="其他频道",新昌新聞綜合 (1080p) [Not 24/7]
+https://l.cztvcloud.com/channels/lantian/SXxinchang1/720p.m3u8
+#EXTINF:-1 group-title="地方频道",福州广播电视台新闻综合频道 (FZTV-1) (1080p)
+http://live.zohi.tv/video/s10001-fztv-1/index.m3u8
+#EXTINF:-1 group-title="地方频道",福州广播电视台都市生活频道 (FZTV-3) (1080p)
+http://live.zohi.tv/video/s10001-fztv-3/index.m3u8
+#EXTINF:-1 group-title="地方频道",福州电视台少儿频道 (FZTV-少儿) (1080p)
+http://live.zohi.tv/video/s10001-fztv-4/index.m3u8
