@@ -3,9 +3,9 @@
 http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jbXMmbm5fdGltZXpvbmU9OCZjZG5leF9pZD1hbF9obHNfbGR2dCZ1dWlkPTliODY4NmU5ZTM2YzYwMmMmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8
 #EXTINF:-1 group-title="4K8K专属专区",Shenzhen Satellite TV (2160p)
 https://livepull-tcms.sztv.com.cn/live/sz4Kpgm.m3u8
-#EXTINF:-1 group-title="4K8K专属专区",东南卫视 (Southeast Television fka Fujian Television) (2160p)
+#EXTINF:-1 group-title="4K8K专属专区",吉林卫视 (2160p)
 http://36.109.231.253:5146/udp/118.81.195.79:9003
+#EXTINF:-1 group-title="4K8K专属专区",安徽卫视 (2160p)
+http://110.157.192.1:4022/udp/118.81.195.79:9003
 #EXTINF:-1 group-title="4K8K专属专区",山西卫视 (2160p)
 http://110.156.223.1:6666/udp/118.81.195.79:9003
-#EXTINF:-1 group-title="4K8K专属专区",河北卫视 (2160p)
-http://110.157.192.1:4022/udp/118.81.195.79:9003
