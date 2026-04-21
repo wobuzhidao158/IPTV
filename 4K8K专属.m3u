@@ -5,7 +5,7 @@ http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jb
 https://livepull-tcms.sztv.com.cn/live/sz4Kpgm.m3u8
 #EXTINF:-1 group-title="4K8K专属专区",东南卫视 (Southeast Television fka Fujian Television) (2160p)
 http://110.157.192.1:5140/udp/118.81.195.79:9003
-#EXTINF:-1 group-title="4K8K专属专区",东方卫视 (2160p)
-http://110.157.192.1:4022/udp/118.81.195.79:9003
 #EXTINF:-1 group-title="4K8K专属专区",吉林卫视 (2160p)
-http://36.109.231.253:5146/udp/118.81.195.79:9003
+http://110.156.223.1:6666/udp/118.81.195.79:9003
+#EXTINF:-1 group-title="4K8K专属专区",安徽卫视 (2160p)
+http://110.157.192.1:4022/udp/118.81.195.79:9003
