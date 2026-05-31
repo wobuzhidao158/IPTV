@@ -1,6 +1,8 @@
 #EXTM3U
+#EXTINF:-1 group-title="4K8K专属专区",CCTV-4K (1080p)
+http://110.157.192.1:4022/udp/198.204.240.250:82
 #EXTINF:-1 group-title="4K8K专属专区",CCTV-8K (1080p)
-http://36.109.231.253:5146/udp/198.204.240.250:82
+http://110.156.223.1:6666/udp/198.204.240.250:82
 #EXTINF:-1 group-title="4K8K专属专区",CCTV-8K (1080p)
 http://192.151.150.154/live/cctv8k.m3u8
 #EXTINF:-1 group-title="4K8K专属专区",Hunan TV (2160p)
@@ -9,7 +11,7 @@ http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jb
 https://livepull-tcms.sztv.com.cn/live/sz4Kpgm.m3u8
 #EXTINF:-1 group-title="4K8K专属专区",东南卫视 (Southeast Television fka Fujian Television) (2160p)
 http://36.109.231.253:5146/udp/118.81.195.79:9003
-#EXTINF:-1 group-title="4K8K专属专区",安徽卫视 (2160p)
+#EXTINF:-1 group-title="4K8K专属专区",东方卫视 (2160p)
 http://110.157.192.1:5140/udp/118.81.195.79:9003
 #EXTINF:-1 group-title="4K8K专属专区",Hebei TV (2160p)
 https://event.pull.hebtv.com:443/live/live101.m3u8
